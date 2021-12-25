@@ -15,29 +15,44 @@ class AuthApiController extends Controller
         $password = $request->input('password');
         $checkField = 0;
 
+            //user use email
         if (filter_var($email_or_username, FILTER_VALIDATE_EMAIL)) {
             Auth::attempt(['email' => $email_or_username, 'password' => $password]);
             $checkField = 1;
         } else {
+            //user use username
             Auth::attempt(['username' => $email_or_username, 'password' => $password]);
             $checkField = 2;
         }
 
+        // return invalid message when fail Auth
         if (!Auth::check()) {
-            $errorMessageJson = response()->json(['message' => 'Invalid login details'], 401);
-            return $errorMessageJson;
+            return response()->json(['message' => 'Invalid login details'], 401);
         }
 
         /** @var \App\Models\user **/
         $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        // return token when User login
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
             'check_field' => $checkField,
         ]);
     }
+
+       // method for user logout and delete token
+       public function logout()
+       {
+        /** @var \App\Models\user **/
+        $user = auth()->user();
+        $user->tokens()->delete();
+        return response()->json([
+             'message' => 'You have successfully logged out and the token was successfully deleted'
+        ]);
+       }
+       
 
     public function register(Request $request)
     {

@@ -12,9 +12,19 @@ class TodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function test(request $info)
+    {
+        return response()->json(["request" =>
+        [
+            'finally' => $info->get('finally'),
+            'count' => $info->get('count')
+        ]]);
+        // dd ($info->get('finally'));
+    }
+
     public function index()
     {
-        return view('welcome');
+        return null;
     }
 
     /**
@@ -24,7 +34,7 @@ class TodoController extends Controller
      */
     public function create()
     {
-        //
+        return null;
     }
 
     /**
@@ -35,7 +45,7 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return null;
     }
 
     /**
@@ -46,7 +56,7 @@ class TodoController extends Controller
      */
     public function show(todo $todo)
     {
-        //
+
     }
 
     /**

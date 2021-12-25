@@ -22,6 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('phone');
             $table->string('password');
             $table->string('user_type')->default('free_user');
+            $table->string('plan_package')->nullable();
+            $table->integer('count')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

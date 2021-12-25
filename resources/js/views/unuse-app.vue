@@ -3,6 +3,7 @@
     <h1 class="text-2xl font-bold underline">
            {{message}}! ~~
     </h1>
+  
   </div>
 </template>
 <script>

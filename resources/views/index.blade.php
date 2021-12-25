@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,19 +13,18 @@
     <title>{{env('APP_NAME')}}</title>
 
     <style>
-        body {
-            background-color: #040720;
-            color: #9F9FFF;
+        .gradient-color {
+            background-color: #e9bcb7;
+            background-image: linear-gradient(315deg, #e9bcb7 0%, #29524a 74%);
         }
     </style>
 </head>
-<body>
-wedfwefwef
-    <div id="app">
 
-        <app></app>
-    </div>
-
+<body class="bg-gradient-to-r from-cyan-500 to-blue-500" >
+        <div id="app" class="w-full my-20">
+            <router-view></router-view>
+        </div>
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
+
 </html>
