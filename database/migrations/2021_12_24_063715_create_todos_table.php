@@ -19,8 +19,8 @@ class CreateTodosTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('title');
             $table->string('description');
-            $table->date('date'); //date_set_reminder
-            $table->boolean('toggle_reminder');
+            $table->string('date')->nullable(); //date_set_reminder
+            $table->boolean('toggle_reminder')->default(false);
             $table->timestamps();
         });
     }

@@ -3,12 +3,13 @@
         <Navbar></Navbar>
         <main class="w-11/12 bg-white mx-auto my-5 py-3 px-4 rounded">
             <div class="flex flex-wrap -mx-3 mb-6">
-                <h1
-                    class="text-center text-3xl w-full p-3 mb-6 mx-3 "
+                         <h1
+                    class="text-center text-3xl w-full p-3 mb-6 mx-3"
                     style="right: 6px"
                 >
-                    Create
+                    Edit
                 </h1>
+
                 <div
                     class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500"
                 >
@@ -91,7 +92,11 @@
                     <div class="relative">
                         <input
                             v-model="hours"
-                            :disabled="toggle_reminder == 0 ? true : false"
+                            :disabled="
+                                toggle_reminder == 0 || date == ''
+                                    ? true
+                                    : false
+                            "
                             class="appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 focus:outline-none focus:bg-white focus:border-gray-500"
                             id="grid-city"
                             type="number"
@@ -113,7 +118,9 @@
                     </label>
                     <input
                         v-model="minutes"
-                        :disabled="toggle_reminder == 0 ? true : false"
+                        :disabled="
+                            toggle_reminder == 0 || date == '' ? true : false
+                        "
                         class="appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 focus:outline-none focus:bg-white focus:border-gray-500"
                         id="grid-city"
                         type="number"
@@ -131,10 +138,10 @@
                     </button>
 
                     <button
-                        @click="serviceStore"
+                        @click="serviceUpdate"
                         class="md:my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
                     >
-                        + Add To Do
+                        Edit
                     </button>
                 </div>
             </div>
@@ -156,24 +163,22 @@ export default {
             title: "",
             description: "",
             date: "",
-            hours: "",
-            minutes: "",
-            finalDate: "",
+            hours: 0,
+            minutes: 0,
             toggle_reminder: 0,
             token: "",
         };
     },
     computed: {
         dateFormat() {
-            //14:18
-            this.finalDate = `${this.date} ${this.hours}:${this.minutes}`;
             return `${this.date} ${this.hours}:${this.minutes}`;
         },
     },
     mounted() {
         const accessToken = localStorage.getItem("access_token");
-        this.token = accessToken;
         if (accessToken == null) this.$router.push({path:'/'});
+
+        this.token = accessToken;
         // $route.params.id <- to get the params
         //    $route.query.id <- to get query
         // this.$router.history.current.query.logoutMessage
@@ -185,13 +190,19 @@ export default {
     },
     methods: {
         numberedToggleReminder(event) {
+            console.log(event.target.checked, "cc");
+            if (event.target.checked == false) {
+                this.date = "";
+                this.minutes = 0;
+                this.hours = 0;
+            }
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
         },
-        serviceStore() {
+        serviceUpdate() {
             const thisVue = this;
             const id = thisVue.$router.history.current.query.id;
-            fetch(`/api/todos`, {
-                method: "post",
+            fetch(`/api/todos/${id}`, {
+                method: "put",
                 headers: { ...kHeader, Authorization: this.token },
                 body: JSON.stringify({
                     title: this.title,
@@ -203,10 +214,8 @@ export default {
                 if (rawContent.status === 200) {
                     const content = await rawContent.json();
                     console.log(content);
-                    if (content.message_status === "SUCCESS"){
-
+                    if (content.message_status === "SUCCESS")
                         thisVue.$router.push({ path: "/" + content.to });
-                    }
                 }
             });
         },

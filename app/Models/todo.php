@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class todo extends Model
+class Todo extends Model
 {
     use HasFactory;
 
@@ -19,5 +19,6 @@ class todo extends Model
         'description',
         'date',
         'toggle_reminder',
+        'user_id',
     ];
 }

@@ -25,7 +25,10 @@ class User extends Authenticatable
         'user_type',
         'count',
         'plan_package',
-
+        'achievements',
+        'badge_1',
+        'badge_2',
+        'badge_3',
     ];
 
     /**
