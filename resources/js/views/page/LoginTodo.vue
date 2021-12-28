@@ -90,6 +90,7 @@ export default {
         };
     },
     mounted() {
+        // localStorage.clear();
         // axios.get("/sanctum/csrf-cookie").then((response) => {
         //     console.log(response);
         // });

@@ -2331,6 +2331,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2372,6 +2380,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     numberedToggleReminder: function numberedToggleReminder(event) {
       this.toggle_reminder = event.target.checked == true ? 1 : 0;
     },
+    validateDate: function validateDate() {
+      if (this.toggle_reminder != 1) {
+        return "";
+      }
+
+      var dateformat = "".concat(this.date, " ").concat(this.hours, ":").concat(this.minutes);
+      var date = moment__WEBPACK_IMPORTED_MODULE_3___default()(dateformat);
+      var check = date.isValid();
+      console.log(check);
+      return !check ? "" : date;
+    },
     serviceStore: function serviceStore() {
       var thisVue = this;
       var id = thisVue.$router.history.current.query.id;
@@ -2383,7 +2402,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         body: JSON.stringify({
           title: this.title,
           description: this.description,
-          date: this.toggle_reminder == 1 ? this.dateFormat : "",
+          date: this.validateDate(),
           toggle_reminder: this.toggle_reminder
         })
       }).then( /*#__PURE__*/function () {
@@ -3111,6 +3130,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   mounted: function mounted() {
+    // localStorage.clear();
     // axios.get("/sanctum/csrf-cookie").then((response) => {
     //     console.log(response);
     // });

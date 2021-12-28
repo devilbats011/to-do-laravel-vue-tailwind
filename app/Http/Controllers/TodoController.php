@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use App\Providers\EventTodoLog;
+use App\Jobs\SendReminderEmailJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,6 +19,15 @@ class TodoController extends Controller
             "message" => "get All To-Do",
             "data" => $UserAllToDos
         ]);
+    }
+
+    private function sendReminderEmailTodo(Todo $todo,$id) {
+        // $emailJobs = new SendReminderEmailJob($email,$todo);
+        $data = [$todo,$id];
+        SendReminderEmailJob::dispatch($data)->delay(Carbon::now());
+        // if($todo['toggle_reminder'] == 1) {
+        // }
+        return null;
     }
 
     /**
@@ -36,9 +48,9 @@ class TodoController extends Controller
         $request['toggle_reminder'] = !empty($request['date']) ? true : false;
 
         $user = Auth::user();
-
+        
     
-        Todo::create([
+         $todo = Todo::create([
             'user_id'=> $user->id,
             'title' => $validatedTodo['title'],
             'description' => $validatedTodo['description'],
@@ -54,6 +66,11 @@ class TodoController extends Controller
         $user['count'] = $sum;
         $user->save();
         
+        //updated|created|user name|date write the log|achieviement|user_type
+     
+        event(new EventTodoLog( $validatedTodo['title'],"Store New Todo item"));
+        $this->sendReminderEmailTodo($todo,$user->id);
+
         return response()->json([
             'message' => 'Sucessfully added One to-do list',
             'message_status' => 'SUCCESS',
@@ -92,7 +109,7 @@ class TodoController extends Controller
             $_user['badge_3'] = $pass;
         }
         $_user->save();
-
+        
         return [
             'badge_1' => $_user['badge_1'],
             'badge_2' => $_user['badge_2'],
@@ -110,14 +127,13 @@ class TodoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $validatedTodo = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'date' => 'nullable|string|max:255',
-            // 'toggle_reminder' => 'required|boolean'
+           
         ]);
-        // dd([$request['toggle_reminder'] == false,$request['toggle_reminder'] == true]);
+      
         if ($request['toggle_reminder'] == false ){
             $request['date'] = null; 
             $request['toggle_reminder'] = 0;    
@@ -132,6 +148,10 @@ class TodoController extends Controller
         $todo['date'] = $validatedTodo['date'];
         $todo['toggle_reminder'] = $request['toggle_reminder'];
         $todo->save();
+
+        event(new EventTodoLog( $todo['title'] ,"Updated a Todo item"));
+        //Auth::user()->email,$todo
+        $this->sendReminderEmailTodo($todo,Auth::id());
 
         return response()->json([
             'message' => 'Sucessfully Updated the to-do list',
@@ -151,6 +171,7 @@ class TodoController extends Controller
         $todo = Todo::find($id);
         $todo->delete();
 
+        event(new EventTodoLog( $todo['title'],"Deleted a Todo item"));
         return response()->json([
             'message' => 'Sucessfully Deleted the to-do list',
             'to' => 'display'
@@ -168,10 +189,6 @@ class TodoController extends Controller
 
     public function pagination(){
         return response()->json(Todo::paginate())->status(200);
-    }
-
-    public function sortByLastest(){
-        return response()->json(Todo::orderBy('created_at', 'desc'))->status(200);
     }
 
 
@@ -197,10 +214,6 @@ class TodoController extends Controller
     //     return null;
     // }
 
-        // public function txt(){
-    //     Storage::disk('local')->append('log\audit-log.txt', "xxee");
-    //     dd("check flet at ....\to-do-laravel\storage\app\log\{filename}");
-    // }
 
     /**
      * Show the form for creating a new resource.
