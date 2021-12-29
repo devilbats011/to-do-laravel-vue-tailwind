@@ -3445,22 +3445,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   name: "LoginTodo",
   data: function data() {
     return {
-      email_or_username: "jason94",
-      password: "pass12345",
+      email_or_username: "",
+      password: "",
       loginDisabled: false,
       errorMessage: "",
       _header: null
     };
   },
   mounted: function mounted() {
-    // localStorage.clear();
-    // axios.get("/sanctum/csrf-cookie").then((response) => {
-    //     console.log(response);
-    // });
-    // console.log(
-    //     "LoginTodo Page",
-    //     this.$router.history.current.query.logoutMessage
-    // );
     this._header = _constant__WEBPACK_IMPORTED_MODULE_1__.kHeader;
     if (localStorage.getItem("access_token") != null) this.$router.push({
       path: "/display"
@@ -4050,15 +4042,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       registerDisabled: false,
-      name: "jason",
+      name: "",
       nameError: "",
-      username: "jason94",
+      username: "",
       usernameError: "",
-      email: "jason@json.com",
+      email: "",
       emailError: "",
-      phone: "1234567890",
+      phone: "",
       phoneError: "",
-      password: "pass12345",
+      password: "",
       passwordError: "",
       arrayErrors: []
     };

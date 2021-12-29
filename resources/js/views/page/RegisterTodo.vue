@@ -143,15 +143,15 @@ export default {
     data() {
         return {
             registerDisabled: false,
-            name: "jason",
+            name: "",
             nameError: "",
-            username: "jason94",
+            username: "",
             usernameError:"",
-            email: "jason@json.com",
+            email: "",
             emailError: "",
-            phone: "1234567890",
+            phone: "",
             phoneError: "",
-            password: "pass12345",
+            password: "",
             passwordError: "",
             arrayErrors:[]
         };

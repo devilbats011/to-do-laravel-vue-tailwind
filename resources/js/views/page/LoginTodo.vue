@@ -82,23 +82,15 @@ export default {
     name: "LoginTodo",
     data() {
         return {
-            email_or_username: "jason94",
-            password: "pass12345",
+            email_or_username: "",
+            password: "",
             loginDisabled: false,
             errorMessage: "",
             _header: null,
         };
     },
     mounted() {
-        // localStorage.clear();
-        // axios.get("/sanctum/csrf-cookie").then((response) => {
-        //     console.log(response);
-        // });
 
-        // console.log(
-        //     "LoginTodo Page",
-        //     this.$router.history.current.query.logoutMessage
-        // );
         this._header = kHeader;
         if(localStorage.getItem("access_token") != null)
           this.$router.push({ path:"/display" });
