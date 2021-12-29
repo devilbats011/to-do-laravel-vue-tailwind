@@ -4,17 +4,16 @@
         <main class="w-11/12 bg-white mx-auto my-5 py-3 px-4 rounded">
             <div class="flex flex-wrap -mx-3 mb-6">
                 <h1
-                    class="text-center text-3xl w-full p-3 mb-6 mx-3 "
+                    class="text-center text-3xl w-full p-3 mb-6 mx-3"
                     style="right: 6px"
                 >
                     Create
                 </h1>
-                <div
-                    class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500"
-                >
+                <div class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500" v-if="errorToggle == true" >
                     <h5>Errors :</h5>
-                    <p class="text-md italic">*Please fill out title</p>
-                    <p class="text-md italic">*Please fill out Description</p>
+                    <p class="text-md italic" v-if="titleError !== ''" >*title : {{titleError}}</p>
+                    <p class="text-md italic" v-if="descriptionError !== ''">*Description : {{descriptionError}}</p>
+                    <p class="text-md italic" v-if="messageError !== ''">*Mesage : {{ messageError }}</p>
                 </div>
 
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -99,9 +98,7 @@
                             min="0"
                             placeholder="0"
                         />
-                        <!-- <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-          <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-        </div> -->
+            
                     </div>
                 </div>
                 <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -133,16 +130,14 @@
                     <button
                         @click="serviceStore"
                         class="md:my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
+                        :class="
+                                    btnDisabled
+                                    ? 'bg-teal-200'
+                                    : 'bg-teal-500 hover:bg-teal-700'
+                                "
                     >
                         + Add To Do
                     </button>
-
-                    <!-- <button
-                        @click="validateDate()"
-                        class="md:my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
-                    >
-                        + TEST DATE
-                    </button> -->
 
                 </div>
             </div>
@@ -152,12 +147,21 @@
 
 <script>
 import { kHeader } from "../../constant";
-import Navbar from "./Navbar.vue";
-import moment from "moment";
+import Navbar from "../component/Navbar.vue";
+var moment = require("moment-timezone");
 
 export default {
     components: {
         Navbar,
+    },
+    mounted() {
+        const accessToken = localStorage.getItem("access_token");
+        this.token = accessToken;
+        if (accessToken == null) this.$router.push({ path: "/" });
+        // console.log(
+        //     this.$router.history.current.query,
+        //     this.$router.history.current.params,
+        // );
     },
     data() {
         return {
@@ -169,43 +173,43 @@ export default {
             finalDate: "",
             toggle_reminder: 0,
             token: "",
+            errorToggle: false,
+            titleError: "",
+            descriptionError: "",
+            messageError: "",
+            btnDisabled: false
         };
     },
     computed: {
         dateFormat() {
-            //14:18
             this.finalDate = `${this.date} ${this.hours}:${this.minutes}`;
             return `${this.date} ${this.hours}:${this.minutes}`;
         },
     },
-    mounted() {
-        const accessToken = localStorage.getItem("access_token");
-        this.token = accessToken;
-        if (accessToken == null) this.$router.push({path:'/'});
-        // $route.params.id <- to get the params
-        //    $route.query.id <- to get query
-        // this.$router.history.current.query.logoutMessage
-        console.log(
-            this.$router.history.current.query,
-            this.$router.history.current.params,
-            " -- pparaam|qq"
-        );
-    },
     methods: {
+
         numberedToggleReminder(event) {
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
         },
-        validateDate(){
-            if(this.toggle_reminder != 1){
-                return ""
+        validateDate() {
+            if (this.toggle_reminder != 1) {
+                return "";
             }
-            const dateformat = `${this.date} ${this.hours}:${this.minutes}`
-            let date = moment(dateformat)
-            let check = date.isValid()
+            const dateformat = `${this.date} ${this.hours}:${this.minutes}`;
+            let date = moment.tz(dateformat, "Asia/Kuala_Lumpur");
+            let check = date.isValid();
             console.log(check);
-            return !check ? "" : date
+            return !check ? "" : date.format();
+        },
+        clearErrors(){
+            this.errorToggle = false
+            this.titleError = ""
+            this.descriptionError = ""
+            this.messageError = ""
         },
         serviceStore() {
+            this.clearErrors()
+            this.btnDisabled = true
             const thisVue = this;
             const id = thisVue.$router.history.current.query.id;
             fetch(`/api/todos`, {
@@ -218,15 +222,24 @@ export default {
                     toggle_reminder: this.toggle_reminder,
                 }),
             }).then(async (rawContent) => {
+                const content = await rawContent.json();
                 if (rawContent.status === 200) {
-                    const content = await rawContent.json();
                     console.log(content);
-                    if (content.message_status === "SUCCESS"){
-
+                    if (content.message_status === "SUCCESS") {
                         thisVue.$router.push({ path: "/" + content.to });
                     }
                 }
-            });
+                else if(rawContent.status == 422) {
+                    console.log("422-",content)
+                    thisVue.messageError = content.message
+                    for (var key in content.errors){
+                        thisVue[`${key}Error`] = content.errors[key][0]
+                    }
+                    thisVue.errorToggle = true
+                }
+            }).catch(err=>{
+                console.error(err)
+            }).finally(()=>thisVue.btnDisabled = false)
         },
     },
 };

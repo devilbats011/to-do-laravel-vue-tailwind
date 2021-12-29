@@ -27,9 +27,6 @@ class ListenerTodoLog
      */
     public function handle(EventTodoLog $event)
     {
-
-        //updated|created|user name|date write the log|achieviement|user_type
-
         /** @var App\Models\User  */
         $user = Auth::user();
         $content =

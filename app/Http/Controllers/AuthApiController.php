@@ -19,24 +19,11 @@ class AuthApiController extends Controller
 
         $email_or_username = $validatedData['email_or_username'];
         $password = $validatedData['password'];
-        // $content = "email_or_username: ".$email_or_username." | password: ".$password;
-        // Storage::disk('local')->append('todo-auth-log/log.txt', $content );
-        // return response()->json([$email_or_username,$password ]);
-            //user use email
-              // if($result2 == true){
-            //     Storage::disk('local')->append('todo-auth-log/log', "username_Auth Attempt::true");
 
-            // }
-            // else{
-
-            //     Storage::disk('local')->append('todo-auth-log/log', "username_Auth Attempt::false");
-                // Storage::disk('local')->append('todo-auth-log/log.txt', "email_Auth Attempt::".$result);
-
-            // }
-        $auth_check=false;
+        $auth_check = false;
         if (filter_var($email_or_username, FILTER_VALIDATE_EMAIL)) {
             $auth_check = Auth::attempt(['email' => $email_or_username, 'password' => $password]);
-            
+
         } else {
             //user use username
             $auth_check = Auth::attempt(['username' => $email_or_username, 'password' => $password]);
@@ -44,7 +31,7 @@ class AuthApiController extends Controller
 
         // return invalid message when fail Auth
         if (!$auth_check) {
-             Storage::disk('local')->append('todo-auth-log/log.txt', "auth_check::false");
+            Storage::disk('local')->append('todo-auth-log/log.txt', "auth_check::false");
             return response()->json(['message' => 'Invalid login details'], 401);
         }
 
@@ -56,26 +43,25 @@ class AuthApiController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'to' => 'display'
+            'to' => 'display',
         ]);
     }
 
-       // method for user logout and delete token
-       public function logout()
-       {
+    // method for user logout and delete token
+    public function logout()
+    {
         /** @var \App\Models\user **/
         $user = auth()->user();
         $user->tokens()->delete();
         return response()->json([
-             'message' => 'You have successfully logged out.'
+            'message' => 'You have successfully logged out.',
         ]);
-       }
-       
+    }
 
     public function register(Request $request)
     {
         //phone digit based on -> https://en.wikipedia.org/wiki/Telephone_numbers_in_Malaysia, to be safe -> min:8
-        
+
         //Catch and return error validation
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -101,15 +87,16 @@ class AuthApiController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'message_status' => "SUCCESS",
-            'to' => ""
+            'to' => "",
         ]);
     }
 
-    public function getTheUser() {
+    public function getTheUser()
+    {
 
         /** @var \App\Models\user */
         $user = Auth::user();
-        
+
         return response()->json([
             'name' => $user->name,
             'username' => $user->username,

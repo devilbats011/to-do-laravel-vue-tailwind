@@ -13,8 +13,6 @@ class ReminderEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    // public $todo;
-    // public $user;
     protected $content;
     /**
      * Create a new message instance.
@@ -23,13 +21,7 @@ class ReminderEmail extends Mailable
      */
     public function __construct($data)
     {
-        // $this->todo = $data[0];
-        // $this->user = $data[1];
         $this->content = $data;
-        
-
-        //PASS!!!
-        // $this->test = "PLSSSSS!!!";
     }
 
     /**

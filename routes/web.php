@@ -17,20 +17,8 @@ use App\Http\Controllers\TodoController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('index');
-// });
-// Route::get('/carbon', function () {
-  
-//  dd([Carbon::parse('2021-12-29T01:13:00.000Z')->toString()],Carbon::now()->toString() );
-// });
-// Route::get('/many', function () {
-//   $user=User::where('username', '=', 'mazlan94')->first();
-//   dd($user->todos()->get()[0]->user_id);
 
-// });
-
-
+Route::apiResource('/test/todos', TodoController::class)->only((['index']));
 
 Route::get('/{vue?}', function() {
     return view('index');

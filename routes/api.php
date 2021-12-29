@@ -20,8 +20,6 @@ use App\Http\Controllers\UserController;
 
 Route::post('/login', [AuthApiController::class, 'login'])->name('auth.login');
 
-// Route::post('/test/login', [AuthApiController::class, 'login'])->name('test.auth.login');
-
 Route::post('/register', [AuthApiController::class, 'register'])->name('auth.register');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -35,7 +33,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::middleware([checkToDoCount::class,'auth:sanctum'])->group(function () {
     Route::apiResource('/todos', TodoController::class)->only((['store','create']));
-    // Route::get('/to/test', [ToDoController::class, 'test']);
 });
 
 

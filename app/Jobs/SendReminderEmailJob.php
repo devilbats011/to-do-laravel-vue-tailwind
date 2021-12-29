@@ -55,13 +55,8 @@ class SendReminderEmailJob implements ShouldQueue
         // $reminderEmail = new ReminderEmail($this->email,$this->todo);
         // Storage::disk('local')->append('error_log/error_check.txt', $this->data['email']);
         $user = User::find($this->userId);
-        // $reminderEmail = new ReminderEmail($this->todo,$user);
         $data = [$this->todo,$user];
         Mail::to($user['email'])->send(new ReminderEmail($data));
-
-        // PASS!!
-        // Mail::to($user['email'])->send(new ReminderEmail("PLSSSSxx!!"));
-
     }
 
     public function middleware()

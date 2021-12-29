@@ -14,10 +14,10 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $UserAllToDos = Todo::where('user_id',Auth::id())->orderByDesc('created_at')->get();
+        $UserAllToDos = Todo::where('user_id',Auth::id())->orderByDesc('created_at')->paginate(5);
         return response()->json([
             "message" => "get All To-Do",
-            "data" => $UserAllToDos
+            "data" => $UserAllToDos,
         ]);
     }
 
@@ -68,9 +68,7 @@ class TodoController extends Controller
         $sum = 1 + $count;
         $user['count'] = $sum;
         $user->save();
-        
-        //updated|created|user name|date write the log|achieviement|user_type
-     
+             
         event(new EventTodoLog( $validatedTodo['title'],"Store New Todo item"));
         $this->sendReminderEmailTodo($todo,$user->id);
 
@@ -179,43 +177,6 @@ class TodoController extends Controller
             'to' => 'display'
         ]);
     }
-    
-    public function test(Request $info)
-    {
-        return response()->json(["request" =>
-        [
-            'finally' => $info->get('finally'),
-            'count' => $info->get('count')
-        ]]);
-    }
-
-    public function pagination(){
-        return response()->json(Todo::paginate())->status(200);
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-    // public function show(todo $todo)
-    // {
-
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-    // public function edit(todo $todo)
-    // {
-    //     return null;
-    // }
-
 
     /**
      * Show the form for creating a new resource.

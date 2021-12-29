@@ -78,10 +78,18 @@ class TodoApiTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_create_a_new_todo_list_when_user_had_authenticated()
+    public function test_create_3_new_todo_list_when_user_had_authenticated()
     {
         $user = $this->create_get_user_mock();
         Sanctum::actingAs($user);
+
+        $this->create_a_new_todo();
+        $this->create_a_new_todo();
+        $this->create_a_new_todo();
+
+    }
+
+    private function create_a_new_todo(){
         $randomString = Str::random(3);
         $response = $this->post('api/todos', [
             'title' => 'title to-do testing #' . $randomString,
@@ -128,9 +136,11 @@ class TodoApiTest extends TestCase
 
     private function clear_user_mock_and_all_user_todos(){
         $user = $this->create_get_user_mock();
-        $user=User::where('username', '=', 'mazlan94')->first();
-        $userId = $user->todos()->get()[0]->user_id;
-        DB::table('todos')->where('user_id', '=', $userId)->delete();
+        $user= User::where('username', '=', 'mazlan94')->first();
+        if($user->todos()->count() > 0){
+            $userId = $user->todos()->get()[0]->user_id;
+            DB::table('todos')->where('user_id', '=', $userId)->delete();
+        }
         $user->delete();
     }
 

@@ -207,7 +207,7 @@
 <script>
 import { kHeader } from '../../constant';
 import { serviceGetUserInfo } from '../../services/api';
-import Navbar from "./Navbar.vue";
+import Navbar from "../component/Navbar.vue"
 export default {
     components: {
         Navbar,

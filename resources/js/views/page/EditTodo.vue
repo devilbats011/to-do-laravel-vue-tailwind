@@ -3,19 +3,18 @@
         <Navbar></Navbar>
         <main class="w-11/12 bg-white mx-auto my-5 py-3 px-4 rounded">
             <div class="flex flex-wrap -mx-3 mb-6">
-                         <h1
+                <h1
                     class="text-center text-3xl w-full p-3 mb-6 mx-3"
                     style="right: 6px"
                 >
                     Edit
                 </h1>
 
-                <div
-                    class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500"
-                >
+                <div class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500" v-if="errorToggle == true" >
                     <h5>Errors :</h5>
-                    <p class="text-md italic">*Please fill out title</p>
-                    <p class="text-md italic">*Please fill out Description</p>
+                    <p class="text-md italic" v-if="titleError !== ''" >*title : {{titleError}}</p>
+                    <p class="text-md italic" v-if="descriptionError !== ''">*Description : {{descriptionError}}</p>
+                    <p class="text-md italic" v-if="messageError !== ''">*Mesage : {{ messageError }}</p>
                 </div>
 
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -140,6 +139,11 @@
                     <button
                         @click="serviceUpdate"
                         class="md:my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
+                        :class="
+                            btnDisabled
+                                ? 'bg-teal-200'
+                                : 'bg-teal-500 hover:bg-teal-700'
+                            "
                     >
                         Edit
                     </button>
@@ -157,23 +161,39 @@
 
 <script>
 import { kHeader } from "../../constant";
-import Navbar from "./Navbar.vue";
+import Navbar from "../component/Navbar.vue";
 // import moment from "moment";
-var moment = require('moment-timezone');
+var moment = require("moment-timezone");
 
 export default {
+    mounted() {
+        // console.log( this.$router.history.current.query, this.$router.history.current.params," -- query,params");
+        const accessToken = localStorage.getItem("access_token");
+        if (accessToken == null) this.$router.push({ path: "/" });
+
+        this.token = accessToken;
+        const query = this.$router.history.current.query;
+        this.title = query.title;
+        this.description = query.description;
+    },
     components: {
         Navbar,
     },
     data() {
         return {
             title: "",
+            titleError: "",
             description: "",
+            descriptionError: "",
+            messageError: "",
+            errorToggle: false,
             date: "",
             hours: 0,
             minutes: 0,
             toggle_reminder: 0,
             token: "",
+            btnDisabled: false
+            
         };
     },
     computed: {
@@ -181,20 +201,7 @@ export default {
             return `${this.date} ${this.hours}:${this.minutes}`;
         },
     },
-    mounted() {
-        const accessToken = localStorage.getItem("access_token");
-        if (accessToken == null) this.$router.push({path:'/'});
 
-        this.token = accessToken;
-        // $route.params.id <- to get the params
-        //    $route.query.id <- to get query
-        // this.$router.history.current.query.logoutMessage
-        console.log(
-            this.$router.history.current.query,
-            this.$router.history.current.params,
-            " -- pparaam|qq"
-        );
-    },
     methods: {
         numberedToggleReminder(event) {
             // console.log(event.target.checked, "cc");
@@ -205,19 +212,26 @@ export default {
             }
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
         },
-        validateDate(){
-            if(this.toggle_reminder != 1){
-                return ""
+        validateDate() {
+            if (this.toggle_reminder != 1) {
+                return "";
             }
-            const dateformat = `${this.date} ${this.hours}:${this.minutes}`
-            let date = moment.tz(dateformat,'Asia/Kuala_Lumpur')
-            let check = date.isValid()
+            const dateformat = `${this.date} ${this.hours}:${this.minutes}`;
+            let date = moment.tz(dateformat, "Asia/Kuala_Lumpur");
+            let check = date.isValid();
             const result = !check ? "" : date.format();
-            console.log(check,"-result: ",result)
-            return result
-
+            // console.log(check, "-result: ", result);
+            return result;
+        },
+        clearErrors(){
+            this.errorToggle = false
+            this.titleError = ""
+            this.descriptionError = ""
+            this.messageError = ""
         },
         serviceUpdate() {
+            this.clearErrors()
+            this.btnDisabled = true
             const thisVue = this;
             const id = thisVue.$router.history.current.query.id;
             fetch(`/api/todos/${id}`, {
@@ -230,13 +244,23 @@ export default {
                     toggle_reminder: this.toggle_reminder,
                 }),
             }).then(async (rawContent) => {
-                if (rawContent.status === 200) {
-                    const content = await rawContent.json();
-                    console.log(content);
-                    if (content.message_status === "SUCCESS")
+                const content = await rawContent.json();
+                if (rawContent.status == 200) {
+                    // console.log(content);
+                    if (content.message_status == "SUCCESS")
                         thisVue.$router.push({ path: "/" + content.to });
                 }
-            });
+                else if(rawContent.status == 422) {
+                    // console.log("422-",content)
+                    thisVue.messageError = content.message
+                    for (var key in content.errors){
+                        thisVue[`${key}Error`] = content.errors[key][0]
+                    }
+                    thisVue.errorToggle = true
+                }
+            }).catch(err=>{
+                console.error(err)
+            }).finally(()=>thisVue.btnDisabled = false)
         },
     },
 };

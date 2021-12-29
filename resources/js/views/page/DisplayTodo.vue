@@ -18,7 +18,6 @@
             </tr>
           </thead>
           <tbody class="border">
-            <!-- <h1 :if="isLoading === true" > Loading ... </h1> -->
             <tr v-for="(item, index) in toDos" :key="item.created_at">
               <td>{{ index + 1 }}</td>
               <td>{{ item.title }}</td>
@@ -61,6 +60,9 @@
           + Add
         </button>
       </div>
+  
+    <Pagination :pageDetails="pageDetails" v-on:changePageEmit="onChangePage" :totalPage="totalPage" ></Pagination>
+
     </main>
   </div>
 </template>
@@ -68,60 +70,64 @@
 <script>
 import moment from "moment";
 import { kHeader } from "../../constant";
-import Navbar from "./Navbar.vue";
+import Navbar from "../component/Navbar.vue";
+import Pagination from "./../component/Pagination.vue";
+
+
+
 export default {
   components: {
     Navbar,
+    Pagination,
   },
   mounted() {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken == null) this.$router.push({path:'/'});
 
-    const _header = { ...kHeader, Authorization: accessToken };
-    this.vueHeader = _header;
-
-    this.isLoading = true;
-    fetch(`/api/todos`, {
-      method: "get",
-      headers: _header,
-    })
-      .then(async (rawResponse) => {
-        const content = await rawResponse.json();
-        if (rawResponse.status === 200) {
-          console.log(content, rawResponse);
-
-          this.toDos = content.data;
-        } else {
-          if ((content.message !== null) | (content.message !== undefined))
-            this.$router.push({ path: "/" });
-        }
-      })
-      .catch((err) => {
-        this.errorMessage = content.message;
-        console.warn("caught error");
-        console.error(err);
-      })
-      .finally(() => {
-        this.isLoading = false;
-      });
+    this.vueHeader = { ...kHeader, Authorization: accessToken };
+    this.paginate(1);
   },
   data() {
     return {
       isLoading: true,
       errorMessage: "",
       toDos: [],
-      dataOne: "obtained",
+      pageDetails: {},
+      currentPage:1,
       vueHeader: {},
+      totalPage:0,
     };
   },
   methods: {
     moment(date) {
       return moment(date).format("LLLL");
     },
+    paginate(page){
+      fetch(`/api/todos?page=${page}`, {
+        method: "get",
+        headers: this.vueHeader,
+      })
+        .then(async (rawResponse) => {
+          const content = await rawResponse.json();
+          if (rawResponse.status === 200) {
+            this.pageDetails = content.data
+            this.toDos = content.data.data
+            this.totalPage = content.data.total
+            
+          } else {
+            if ((content.message !== null) | (content.message !== undefined))
+              this.$router.push({ path: "/" });
+          }
+        })
+        .catch((err) => {
+          this.errorMessage = content.message;
+          console.warn("caught error");
+          console.error(err);
+        })
+    
+    },
     serviceCreate() {
-      //log1:this.dataOne not obtained because spell method without 's'
       const thisVue = this;
-      // console.log(this.dataOne);
       fetch("/api/todos/create", {
         method: "get",
         headers: this.vueHeader,
@@ -158,16 +164,28 @@ export default {
             return item.id != id;
           });
           this.toDos = newToDos;
-          console.log(content.message);
+          this.totalPage = this.totalPage - 1
+          this.paginate(this.currentPage)
         })
         .catch((err) => {
           console.error(err);
         });
     },
     serviceEdit(event){
-      //should put check with middle later
-      this.$router.push({ path: "/edit" , query: { id: `${event.target.getAttribute('data-id')}` } });
-      return null;
+      const id = event.target.getAttribute('data-id')
+      const tempArray = this.toDos;
+
+      tempArray.map(todo=>{
+        if(todo.id == id) {
+          this.$router.push({ path: "/edit" , query: { id: todo.id,title:todo.title,description:todo.description } });
+          return null;
+        }
+      })
+      
+    },
+    onChangePage(page){
+      this.currentPage = page
+      this.paginate(page)
     }
   },
 };
