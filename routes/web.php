@@ -1,6 +1,8 @@
 <?php
 
 use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodoController;
 
@@ -18,10 +20,15 @@ use App\Http\Controllers\TodoController;
 // Route::get('/', function () {
 //     return view('index');
 // });
-Route::get('/carbon', function () {
+// Route::get('/carbon', function () {
+  
+//  dd([Carbon::parse('2021-12-29T01:13:00.000Z')->toString()],Carbon::now()->toString() );
+// });
+// Route::get('/many', function () {
+//   $user=User::where('username', '=', 'mazlan94')->first();
+//   dd($user->todos()->get()[0]->user_id);
 
- dd([Carbon::parse('2021-12-29T01:13:00.000Z')->toString()],Carbon::now()->toString() );
-});
+// });
 
 
 

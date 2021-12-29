@@ -158,7 +158,8 @@
 <script>
 import { kHeader } from "../../constant";
 import Navbar from "./Navbar.vue";
-import moment from "moment";
+// import moment from "moment";
+var moment = require('moment-timezone');
 
 export default {
     components: {
@@ -209,10 +210,10 @@ export default {
                 return ""
             }
             const dateformat = `${this.date} ${this.hours}:${this.minutes}`
-            let date = moment(dateformat)
+            let date = moment.tz(dateformat,'Asia/Kuala_Lumpur')
             let check = date.isValid()
-            const result = !check ? "" : date
-            // console.log(check,"-result: ",result)
+            const result = !check ? "" : date.format();
+            console.log(check,"-result: ",result)
             return result
 
         },

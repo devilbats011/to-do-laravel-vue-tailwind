@@ -23,14 +23,12 @@ class TodoController extends Controller
 
     private function sendReminderEmailTodo(Todo $todo,$id) {
        
-        // $user = User::find($this->userId);
-        
         $data = [$todo,$id];
-        //  $checkDate = empty($todo['date']) ? "date is empty" : "date not empty";
-        //  Storage::disk('local')->append('error_log/error_check.txt', $todo['date']." <-date| reminder-> ".$todo['toggle_reminder'].'| empty?: '.$checkDate.'| carbon date:'.Carbon::parse($todo['date'])->toString());
+         $checkDate = empty($todo['date']) ? "date is empty" : "date not empty";
+         Storage::disk('local')->append('error_log/error_check.txt', $todo['date']." <-date| reminder-> ".$todo['toggle_reminder'].'| empty?: '.$checkDate.'| carbon date:'.Carbon::parse($todo['date'],'Asia/Kuala_Lumpur')->toString().' | date now:'.Carbon::now('Asia/Kuala_Lumpur'));
         $date = $todo['date'];
         if($todo['toggle_reminder'] == 1 && empty($date) == false) {
-            SendReminderEmailJob::dispatch($data)->delay(Carbon::parse($date));
+            SendReminderEmailJob::dispatch($data)->delay(Carbon::parse($date,'Asia/Kuala_Lumpur'));
         }
         return null;
     }
@@ -155,7 +153,6 @@ class TodoController extends Controller
         $todo->save();
 
         event(new EventTodoLog( $todo['title'] ,"Updated a Todo item"));
-        //Auth::user()->email,$todo
         $this->sendReminderEmailTodo($todo,Auth::id());
 
         return response()->json([

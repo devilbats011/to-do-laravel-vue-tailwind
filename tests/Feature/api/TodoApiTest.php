@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
+use Illuminate\Support\Facades\DB;
 
 class TodoApiTest extends TestCase
 {
@@ -121,6 +122,16 @@ class TodoApiTest extends TestCase
         Sanctum::actingAs($user);
         $response = $this->get('api/logout', ['Accept' => 'application/json']);
         $response->assertOk();
+        $this->clear_user_mock_and_all_user_todos();
+
+    }
+
+    private function clear_user_mock_and_all_user_todos(){
+        $user = $this->create_get_user_mock();
+        $user=User::where('username', '=', 'mazlan94')->first();
+        $userId = $user->todos()->get()[0]->user_id;
+        DB::table('todos')->where('user_id', '=', $userId)->delete();
+        $user->delete();
     }
 
 }
