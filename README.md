@@ -11,7 +11,7 @@ server localhost with xammp and mysql database
  - composer install
  - php artisan queue:table
  - php migrate
-  - php artisan key:generate
+ - php artisan key:generate
  ```
  Insert Your database infomation in __.env__ file:
  ```
