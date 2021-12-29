@@ -5,11 +5,12 @@ server localhost with xammp and mysql database
  ## __To run this project there are few thing to run first__
  run the command below in the project terminal :
  ```
- - php artisan key:generate
+
  - npm install
  - npm run dev
  - php artisan queue:table
  - php migrate
+  - php artisan key:generate
  ```
  Insert Your database infomation in __.env__ file:
  ```
