@@ -7,11 +7,9 @@ server localhost with xammp and mysql database
  ## __To run this project there are few thing to run first__
  run the command below in the project terminal :
  ```
-
- - npm install
- - npm run dev
  - composer install
- - php artisan queue:table
+ - npm install
+ - npm run watch
  - php artisan migrate
  - php artisan key:generate
  ```
