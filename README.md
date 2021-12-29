@@ -10,7 +10,17 @@ server localhost with xammp and mysql database
  - npm run dev
  - php artisan queue:table
  - php migrate
- ``` 
+ ```
+ Insert Your database infomation in __.env__ file:
+ ```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE={INSERT_DATABASE_NAME}
+DB_USERNAME=root
+DB_PASSWORD=
+ ```
+
 
 ## Unit Test
 Unit Test __TodoApiTest.php__ located at __`tests > Fetaure > api`__
@@ -51,6 +61,8 @@ MAIL_FROM_ADDRESS=example@example.com
 
  &nbsp; __todo_activity_log.txt__ will generate in __storage > app > todo_log__ folder.
 
+## 
+<br>
 
 
 
