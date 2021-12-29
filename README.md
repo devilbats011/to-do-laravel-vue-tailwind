@@ -1,3 +1,5 @@
+# THIS README IS STILL NOT FINISH...
+
 # SIMPLE TODO WEB APP
 the TODO App Craft with `Laravel,Vue and Tailwind`.
 server localhost with xammp and mysql database
