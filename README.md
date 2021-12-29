@@ -1,3 +1,59 @@
+# SIMPLE TODO WEB APP
+the TODO App Craft with `Laravel,Vue and Tailwind`.
+server localhost with xammp and mysql database
+
+ ## __To run this project there are few thing to run first__
+ run the command below in the project terminal :
+ ```
+ - php artisan key:generate
+ - npm install
+ - npm run dev
+ - php artisan queue:table
+ - php migrate
+ ``` 
+
+## Unit Test
+Unit Test __TodoApiTest.php__ located at __`tests > Fetaure > api`__
+  you may run the test using either :
+ > ./vendor/bin/phpunit
+ ### &nbsp; &nbsp; &nbsp; &nbsp; or
+
+>php artisan test
+
+
+## __laravel queue :__<br>
+<!-- * Use __database driver__ by updating QUEUE_CONNECTION variable in your application's __.env__ file.
+ -->
+
+<!-- ```
+QUEUE_CONNECTION=database
+``` -->
+
+<!-- * Change timezone to __'Asia/Kuala_Lumpur'__ in __app.php__ file in __config__ folder
+ ```
+'timezone' => 'Asia/Kuala_Lumpur', 
+ ``` -->
+ * Insert Mail Credential  in __.env__ , for testing purpose you may use [Mailtrap](https://mailtrap.io/)
+
+ ```
+MAIL_MAILER=
+MAIL_HOST=
+MAIL_PORT=
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=
+MAIL_FROM_ADDRESS=example@example.com
+```
+
+ * `php artisan queue:work`
+
+ ## __Todo Log__
+
+ &nbsp; __todo_activity_log.txt__ will generate in __storage > app > todo_log__ folder.
+
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
@@ -6,6 +62,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+
 
 ## About Laravel
 
