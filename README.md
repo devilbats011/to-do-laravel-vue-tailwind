@@ -8,6 +8,7 @@ server localhost with xammp and mysql database
 
  - npm install
  - npm run dev
+ - composer install
  - php artisan queue:table
  - php migrate
   - php artisan key:generate
