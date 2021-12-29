@@ -10,7 +10,7 @@ server localhost with xammp and mysql database
  - npm run dev
  - composer install
  - php artisan queue:table
- - php migrate
+ - php artisan migrate
  - php artisan key:generate
  ```
  Insert Your database infomation in __.env__ file:
