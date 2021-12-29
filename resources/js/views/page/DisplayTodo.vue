@@ -24,7 +24,7 @@
               <td>{{ item.title }}</td>
               <td>{{ item.description }}</td>
               <td>
-                {{ item.toggle_reminder === 1 ? moment(item.date) : "No Reminder" }}
+                {{ item.toggle_reminder === 1 && item.date != null ? moment(item.date) : "No Reminder|no date" }}
               </td>
               <td>
                 <button class="bg-slate-500 py-1 px-3 rounded text-white" :data-id="item.id" @click="serviceEdit" >

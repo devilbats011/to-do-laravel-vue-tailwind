@@ -143,6 +143,12 @@
                     >
                         Edit
                     </button>
+                    <!-- <button
+                        @click="validateDate()"
+                        class="md:my-5 my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
+                    >
+                        xx
+                    </button> -->
                 </div>
             </div>
         </main>
@@ -190,13 +196,25 @@ export default {
     },
     methods: {
         numberedToggleReminder(event) {
-            console.log(event.target.checked, "cc");
+            // console.log(event.target.checked, "cc");
             if (event.target.checked == false) {
                 this.date = "";
                 this.minutes = 0;
                 this.hours = 0;
             }
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
+        },
+        validateDate(){
+            if(this.toggle_reminder != 1){
+                return ""
+            }
+            const dateformat = `${this.date} ${this.hours}:${this.minutes}`
+            let date = moment(dateformat)
+            let check = date.isValid()
+            const result = !check ? "" : date
+            // console.log(check,"-result: ",result)
+            return result
+
         },
         serviceUpdate() {
             const thisVue = this;
@@ -207,7 +225,7 @@ export default {
                 body: JSON.stringify({
                     title: this.title,
                     description: this.description,
-                    date: this.toggle_reminder == 1 ? this.dateFormat : "",
+                    date: this.validateDate(),
                     toggle_reminder: this.toggle_reminder,
                 }),
             }).then(async (rawContent) => {

@@ -22,11 +22,16 @@ class TodoController extends Controller
     }
 
     private function sendReminderEmailTodo(Todo $todo,$id) {
-        // $emailJobs = new SendReminderEmailJob($email,$todo);
+       
+        // $user = User::find($this->userId);
+        
         $data = [$todo,$id];
-        SendReminderEmailJob::dispatch($data)->delay(Carbon::now());
-        // if($todo['toggle_reminder'] == 1) {
-        // }
+        //  $checkDate = empty($todo['date']) ? "date is empty" : "date not empty";
+        //  Storage::disk('local')->append('error_log/error_check.txt', $todo['date']." <-date| reminder-> ".$todo['toggle_reminder'].'| empty?: '.$checkDate.'| carbon date:'.Carbon::parse($todo['date'])->toString());
+        $date = $todo['date'];
+        if($todo['toggle_reminder'] == 1 && empty($date) == false) {
+            SendReminderEmailJob::dispatch($data)->delay(Carbon::parse($date));
+        }
         return null;
     }
 

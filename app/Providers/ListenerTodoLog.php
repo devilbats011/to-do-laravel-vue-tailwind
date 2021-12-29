@@ -33,10 +33,11 @@ class ListenerTodoLog
         /** @var App\Models\User  */
         $user = Auth::user();
         $content =
-        'Title Todo:'.$event->title .
-        ' | Activity:'.$event->activity .
+        'Title Todo:'.$event->title.
+        ' | Activity:'.$event->activity.
         ' | Name:'.$user->name .
         ' | User Type:'.$user->user_type .
+        ' | User Achievement:'.$user->achievements.
         ' | Log Date:' . Carbon::now()->toString();
         Storage::disk('local')->append('todo_log/todo_activity_log.txt', $content);
     }

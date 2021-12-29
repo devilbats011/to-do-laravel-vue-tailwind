@@ -1,0 +1,28 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+
+class BasicTest extends TestCase
+{
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function test_example()
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+    }
+
+    public function testHasItemInBasket()
+    {
+        $basket = ['item_one', 'item_two', 'item_three'];
+        $this->assertTrue($basket[0] === 'item_one');
+        $this->assertFalse($basket[0] === 'item_1');
+        // $this->assertFalse($basket->has('item_four'));
+    }
+}

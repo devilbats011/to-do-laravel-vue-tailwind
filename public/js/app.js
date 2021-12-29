@@ -2919,6 +2919,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2955,8 +2961,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     numberedToggleReminder: function numberedToggleReminder(event) {
-      console.log(event.target.checked, "cc");
-
+      // console.log(event.target.checked, "cc");
       if (event.target.checked == false) {
         this.date = "";
         this.minutes = 0;
@@ -2964,6 +2969,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       this.toggle_reminder = event.target.checked == true ? 1 : 0;
+    },
+    validateDate: function validateDate() {
+      if (this.toggle_reminder != 1) {
+        return "";
+      }
+
+      var dateformat = "".concat(this.date, " ").concat(this.hours, ":").concat(this.minutes);
+      var date = moment__WEBPACK_IMPORTED_MODULE_3___default()(dateformat);
+      var check = date.isValid();
+      var result = !check ? "" : date; // console.log(check,"-result: ",result)
+
+      return result;
     },
     serviceUpdate: function serviceUpdate() {
       var thisVue = this;
@@ -2976,7 +2993,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         body: JSON.stringify({
           title: this.title,
           description: this.description,
-          date: this.toggle_reminder == 1 ? this.dateFormat : "",
+          date: this.validateDate(),
           toggle_reminder: this.toggle_reminder
         })
       }).then( /*#__PURE__*/function () {
@@ -45212,9 +45229,9 @@ var render = function () {
                       _vm._v(
                         "\n              " +
                           _vm._s(
-                            item.toggle_reminder === 1
+                            item.toggle_reminder === 1 && item.date != null
                               ? _vm.moment(item.date)
-                              : "No Reminder"
+                              : "No Reminder|no date"
                           ) +
                           "\n            "
                       ),
