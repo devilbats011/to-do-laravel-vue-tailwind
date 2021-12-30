@@ -25,7 +25,7 @@ DB_PASSWORD=
 
 
 ## Unit Test
-Unit Test __TodoApiTest.php__ located at __`tests > Fetaure`__
+Unit Test __TodoApiTest.php__ located at __`tests > Fetaure > api`__
   you may run the test using either :
  > ./vendor/bin/phpunit
  ### &nbsp; &nbsp; &nbsp; &nbsp; or
