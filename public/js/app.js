@@ -2701,18 +2701,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _constant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constant */ "./resources/js/constant.js");
 /* harmony import */ var _component_Navbar_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../component/Navbar.vue */ "./resources/js/views/component/Navbar.vue");
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2874,7 +2881,8 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
     this.token = accessToken;
     if (accessToken == null) this.$router.push({
       path: "/"
-    }); // console.log(
+    });
+    this.checkCreate(); // console.log(
     //     this.$router.history.current.query,
     // );
   },
@@ -2902,6 +2910,59 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
     }
   },
   methods: {
+    checkCreate: function checkCreate() {
+      var thisVue = this;
+      fetch("/api/todos/create", {
+        method: "get",
+        headers: this.vueHeader
+      }).then( /*#__PURE__*/function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(rawContent) {
+          var content, checkTodoCount, tempString, redirect;
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return rawContent.json();
+
+                case 2:
+                  content = _context.sent;
+
+                  if (!(rawContent.status == 200)) {
+                    _context.next = 11;
+                    break;
+                  }
+
+                  checkTodoCount = content["check-todo-count"];
+                  tempString = checkTodoCount.permission;
+
+                  if (!(tempString.toUpperCase() === "DENIED")) {
+                    _context.next = 11;
+                    break;
+                  }
+
+                  console.log("xx", content);
+                  redirect = checkTodoCount.redirect;
+                  thisVue.$router.push({
+                    path: "/" + redirect
+                  });
+                  return _context.abrupt("return", null);
+
+                case 11:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        return function (_x) {
+          return _ref.apply(this, arguments);
+        };
+      }())["catch"](function (err) {
+        console.error(err);
+      });
+    },
     numberedToggleReminder: function numberedToggleReminder(event) {
       this.toggle_reminder = event.target.checked == true ? 1 : 0;
     },
@@ -2939,17 +3000,17 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
           toggle_reminder: this.toggle_reminder
         })
       }).then( /*#__PURE__*/function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(rawContent) {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(rawContent) {
           var content, key;
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
             while (1) {
-              switch (_context.prev = _context.next) {
+              switch (_context2.prev = _context2.next) {
                 case 0:
-                  _context.next = 2;
+                  _context2.next = 2;
                   return rawContent.json();
 
                 case 2:
-                  content = _context.sent;
+                  content = _context2.sent;
 
                   if (rawContent.status === 200) {
                     console.log(content);
@@ -2977,14 +3038,14 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
 
                 case 4:
                 case "end":
-                  return _context.stop();
+                  return _context2.stop();
               }
             }
-          }, _callee);
+          }, _callee2);
         }));
 
-        return function (_x) {
-          return _ref.apply(this, arguments);
+        return function (_x2) {
+          return _ref2.apply(this, arguments);
         };
       }())["catch"](function (err) {
         console.error(err);
@@ -46713,21 +46774,31 @@ var render = function () {
                     _vm._v(" "),
                     _vm.titleError !== ""
                       ? _c("p", { staticClass: "text-md italic" }, [
-                          _vm._v("*title : " + _vm._s(_vm.titleError)),
+                          _vm._v(
+                            "\n                    *title : " +
+                              _vm._s(_vm.titleError) +
+                              "\n                "
+                          ),
                         ])
                       : _vm._e(),
                     _vm._v(" "),
                     _vm.descriptionError !== ""
                       ? _c("p", { staticClass: "text-md italic" }, [
                           _vm._v(
-                            "*Description : " + _vm._s(_vm.descriptionError)
+                            "\n                    *Description : " +
+                              _vm._s(_vm.descriptionError) +
+                              "\n                "
                           ),
                         ])
                       : _vm._e(),
                     _vm._v(" "),
                     _vm.messageError !== ""
                       ? _c("p", { staticClass: "text-md italic" }, [
-                          _vm._v("*Mesage : " + _vm._s(_vm.messageError)),
+                          _vm._v(
+                            "\n                    *Mesage : " +
+                              _vm._s(_vm.messageError) +
+                              "\n                "
+                          ),
                         ])
                       : _vm._e(),
                   ]

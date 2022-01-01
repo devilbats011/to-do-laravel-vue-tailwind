@@ -11,8 +11,6 @@ class UserController extends Controller {
         /** @var App\Models\User */
         $user = Auth::user();
         $user ->update(['user_type' => 'premium_user']);
-        // $user['user_type'] = "premium_user";
-        // $user->save();
 
         return response()->json([
             "message_status" => "SUCCESS",

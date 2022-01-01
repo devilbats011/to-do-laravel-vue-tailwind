@@ -9,11 +9,20 @@
                 >
                     Create
                 </h1>
-                <div class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500" v-if="errorToggle == true" >
+                <div
+                    class="w-full p-3 mb-6 mx-3 text-red-500 border border-red-500"
+                    v-if="errorToggle == true"
+                >
                     <h5>Errors :</h5>
-                    <p class="text-md italic" v-if="titleError !== ''" >*title : {{titleError}}</p>
-                    <p class="text-md italic" v-if="descriptionError !== ''">*Description : {{descriptionError}}</p>
-                    <p class="text-md italic" v-if="messageError !== ''">*Mesage : {{ messageError }}</p>
+                    <p class="text-md italic" v-if="titleError !== ''">
+                        *title : {{ titleError }}
+                    </p>
+                    <p class="text-md italic" v-if="descriptionError !== ''">
+                        *Description : {{ descriptionError }}
+                    </p>
+                    <p class="text-md italic" v-if="messageError !== ''">
+                        *Mesage : {{ messageError }}
+                    </p>
                 </div>
 
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -98,7 +107,6 @@
                             min="0"
                             placeholder="0"
                         />
-            
                     </div>
                 </div>
                 <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -131,14 +139,13 @@
                         @click="serviceStore"
                         class="md:my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
                         :class="
-                                    btnDisabled
-                                    ? 'bg-teal-200'
-                                    : 'bg-teal-500 hover:bg-teal-700'
-                                "
+                            btnDisabled
+                                ? 'bg-teal-200'
+                                : 'bg-teal-500 hover:bg-teal-700'
+                        "
                     >
                         + Add To Do
                     </button>
-
                 </div>
             </div>
         </main>
@@ -158,6 +165,9 @@ export default {
         const accessToken = localStorage.getItem("access_token");
         this.token = accessToken;
         if (accessToken == null) this.$router.push({ path: "/" });
+
+        this.checkCreate();
+
         // console.log(
         //     this.$router.history.current.query,
         // );
@@ -176,7 +186,7 @@ export default {
             titleError: "",
             descriptionError: "",
             messageError: "",
-            btnDisabled: false
+            btnDisabled: false,
         };
     },
     computed: {
@@ -186,6 +196,31 @@ export default {
         },
     },
     methods: {
+        checkCreate() {
+            const thisVue = this;
+            fetch("/api/todos/create", {
+                method: "get",
+                headers: this.vueHeader,
+            })
+            .then(async (rawContent) => {
+                const content = await rawContent.json();
+                if (rawContent.status == 200) {
+                    const checkTodoCount = content["check-todo-count"];
+                    let tempString = checkTodoCount.permission;
+                    if (tempString.toUpperCase() === "DENIED") {
+                        console.log("xx", content);
+                        const redirect = checkTodoCount.redirect;
+                        thisVue.$router.push({ path: "/" + redirect });
+                        return null;
+                    }
+                    // const to = checkTodoCount.to;
+                    // thisVue.$router.push({ path: "/" + to });
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+        },
         numberedToggleReminder(event) {
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
         },
@@ -199,15 +234,15 @@ export default {
             console.log(check);
             return !check ? "" : date.format();
         },
-        clearErrors(){
-            this.errorToggle = false
-            this.titleError = ""
-            this.descriptionError = ""
-            this.messageError = ""
+        clearErrors() {
+            this.errorToggle = false;
+            this.titleError = "";
+            this.descriptionError = "";
+            this.messageError = "";
         },
         serviceStore() {
-            this.clearErrors()
-            this.btnDisabled = true
+            this.clearErrors();
+            this.btnDisabled = true;
             const thisVue = this;
             const id = thisVue.$router.history.current.query.id;
             fetch(`/api/todos`, {
@@ -219,29 +254,30 @@ export default {
                     date: this.validateDate(),
                     toggle_reminder: this.toggle_reminder,
                 }),
-            }).then(async (rawContent) => {
-                const content = await rawContent.json();
-                if (rawContent.status === 200) {
-                    console.log(content);
-                    if (content.message_status === "SUCCESS") {
+            })
+                .then(async (rawContent) => {
+                    const content = await rawContent.json();
+                    if (rawContent.status === 200) {
+                        console.log(content);
+                        if (content.message_status === "SUCCESS") {
+                            thisVue.$router.push({ path: "/" + content.to });
+                        }
+                    } else if (rawContent.status == 403) {
+                        console.log("403-", content);
                         thisVue.$router.push({ path: "/" + content.to });
+                    } else if (rawContent.status == 422) {
+                        console.log("422-", content);
+                        thisVue.messageError = content.message;
+                        for (var key in content.errors) {
+                            thisVue[`${key}Error`] = content.errors[key][0];
+                        }
+                        thisVue.errorToggle = true;
                     }
-                }
-                else if(rawContent.status == 403) {
-                    console.log("403-",content)
-                     thisVue.$router.push({ path: "/" + content.to });
-                }
-                else if(rawContent.status == 422) {
-                    console.log("422-",content)
-                    thisVue.messageError = content.message
-                    for (var key in content.errors){
-                        thisVue[`${key}Error`] = content.errors[key][0]
-                    }
-                    thisVue.errorToggle = true
-                }
-            }).catch(err=>{
-                console.error(err)
-            }).finally(()=>thisVue.btnDisabled = false)
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+                .finally(() => (thisVue.btnDisabled = false));
         },
     },
 };
