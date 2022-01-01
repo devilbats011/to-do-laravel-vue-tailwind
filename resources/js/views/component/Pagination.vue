@@ -75,11 +75,7 @@
 
 <script>
 export default {
-    props: ["pageDetails","totalPage"],
-    mounted() {
-        this.totalPage = this.pageDetails.total;
-    },
-
+    props: ["totalPage","pageDetails"],
     data() {
         return {
           active: 'bg-indigo-50 border-indigo-500 text-indigo-600',

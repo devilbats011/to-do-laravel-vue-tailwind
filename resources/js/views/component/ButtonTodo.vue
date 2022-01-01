@@ -3,7 +3,7 @@
         <button
             @click="btnClick()"
             :disabled="btnDisabled"
-             class="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
+             class=" w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
             :class="btnDisabled ? classDisabled : classEnabled"
             type="button"
         >
@@ -55,4 +55,6 @@ export default {
     },
 };
 </script>
-<style></style>
+<style>
+
+</style>

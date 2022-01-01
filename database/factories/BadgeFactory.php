@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TodoFactory extends Factory
+class BadgeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,11 +14,9 @@ class TodoFactory extends Factory
      */
     public function definition()
     {
-        $user = User::first();
+        $user = User::where('username','mazlan94')->firstOrFail();
         return [
-            'title' => $this->faker->text(10),
-            'description'  => $this->faker->text(45),
-            'user_id' => $user->id,
+            
         ];
     }
 }

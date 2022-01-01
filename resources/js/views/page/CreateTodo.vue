@@ -160,7 +160,6 @@ export default {
         if (accessToken == null) this.$router.push({ path: "/" });
         // console.log(
         //     this.$router.history.current.query,
-        //     this.$router.history.current.params,
         // );
     },
     data() {
@@ -187,7 +186,6 @@ export default {
         },
     },
     methods: {
-
         numberedToggleReminder(event) {
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
         },
@@ -228,6 +226,10 @@ export default {
                     if (content.message_status === "SUCCESS") {
                         thisVue.$router.push({ path: "/" + content.to });
                     }
+                }
+                else if(rawContent.status == 403) {
+                    console.log("403-",content)
+                     thisVue.$router.push({ path: "/" + content.to });
                 }
                 else if(rawContent.status == 422) {
                     console.log("422-",content)

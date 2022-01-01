@@ -2519,10 +2519,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["pageDetails", "totalPage"],
-  mounted: function mounted() {
-    this.totalPage = this.pageDetails.total;
-  },
+  props: ["totalPage", "pageDetails"],
   data: function data() {
     return {
       active: 'bg-indigo-50 border-indigo-500 text-indigo-600'
@@ -2879,7 +2876,6 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
       path: "/"
     }); // console.log(
     //     this.$router.history.current.query,
-    //     this.$router.history.current.params,
     // );
   },
   data: function data() {
@@ -2963,6 +2959,11 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
                         path: "/" + content.to
                       });
                     }
+                  } else if (rawContent.status == 403) {
+                    console.log("403-", content);
+                    thisVue.$router.push({
+                      path: "/" + content.to
+                    });
                   } else if (rawContent.status == 422) {
                     console.log("422-", content);
                     thisVue.messageError = content.message;
@@ -3253,16 +3254,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 case 2:
                   content = _context3.sent;
-                  tempArray = _this2.toDos;
-                  newToDos = tempArray.filter(function (item) {
-                    return item.id != id;
-                  });
-                  _this2.toDos = newToDos;
-                  _this2.totalPage = _this2.totalPage - 1;
 
-                  _this2.paginate(_this2.currentPage);
+                  if (rawContent.status == 200) {
+                    tempArray = _this2.toDos;
+                    newToDos = tempArray.filter(function (item) {
+                      return item.id != id;
+                    });
+                    _this2.toDos = newToDos;
+                    _this2.totalPage = _this2.totalPage - 1;
 
-                case 8:
+                    _this2.paginate(_this2.currentPage);
+                  } else if (rawContent.status == 403) {
+                    console.log("del-403-", content); //this.$router.push({ path: "/" + content.to });
+                  }
+
+                case 4:
                 case "end":
                   return _context3.stop();
               }
@@ -3489,13 +3495,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
- // import moment from "moment";
+
 
 var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-timezone/index.js");
 
@@ -46123,7 +46124,7 @@ var render = function () {
       "button",
       {
         staticClass:
-          "w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center",
+          " w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center",
         class: _vm.btnDisabled ? _vm.classDisabled : _vm.classEnabled,
         attrs: { disabled: _vm.btnDisabled, type: "button" },
         on: {
@@ -47055,7 +47056,7 @@ var render = function () {
                 "tbody",
                 { staticClass: "border" },
                 _vm._l(_vm.toDos, function (item, index) {
-                  return _c("tr", { key: item.created_at }, [
+                  return _c("tr", { key: index }, [
                     _c("td", [_vm._v(_vm._s(index + 1))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(item.title))]),
@@ -47123,7 +47124,7 @@ var render = function () {
           ]),
           _vm._v(" "),
           _c("Pagination", {
-            attrs: { pageDetails: _vm.pageDetails, totalPage: _vm.totalPage },
+            attrs: { totalPage: _vm.totalPage, pageDetails: _vm.pageDetails },
             on: { changePageEmit: _vm.onChangePage },
           }),
         ],

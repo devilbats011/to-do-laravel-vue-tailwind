@@ -18,7 +18,7 @@
             </tr>
           </thead>
           <tbody class="border">
-            <tr v-for="(item, index) in toDos" :key="item.created_at">
+            <tr v-for="(item, index) in toDos" :key="index">
               <td>{{ index + 1 }}</td>
               <td>{{ item.title }}</td>
               <td>{{ item.description }}</td>
@@ -60,8 +60,8 @@
           + Add
         </button>
       </div>
-  
-    <Pagination :pageDetails="pageDetails" v-on:changePageEmit="onChangePage" :totalPage="totalPage" ></Pagination>
+  <!--    -->
+    <Pagination v-on:changePageEmit="onChangePage" :totalPage="totalPage" :pageDetails="pageDetails"  ></Pagination>
 
     </main>
   </div>
@@ -72,8 +72,6 @@ import moment from "moment";
 import { kHeader } from "../../constant";
 import Navbar from "../component/Navbar.vue";
 import Pagination from "./../component/Pagination.vue";
-
-
 
 export default {
   components: {
@@ -146,6 +144,7 @@ export default {
             const to = checkTodoCount.to;
             thisVue.$router.push({ path: "/" + to });
           }
+
         })
         .catch((err) => {
           console.error(err);
@@ -159,13 +158,21 @@ export default {
       })
         .then(async (rawContent) => {
           const content = await rawContent.json();
-          const tempArray = this.toDos;
-          const newToDos = tempArray.filter(function (item) {
-            return item.id != id;
-          });
-          this.toDos = newToDos;
-          this.totalPage = this.totalPage - 1
-          this.paginate(this.currentPage)
+
+          if(rawContent.status == 200) {
+            const tempArray = this.toDos;
+            const newToDos = tempArray.filter(function (item) {
+              return item.id != id;
+            });
+            this.toDos = newToDos;
+            this.totalPage = this.totalPage - 1
+            this.paginate(this.currentPage)
+          }
+          else if(rawContent.status == 403) {
+            console.log("del-403-",content)
+            //this.$router.push({ path: "/" + content.to });
+          }
+
         })
         .catch((err) => {
           console.error(err);

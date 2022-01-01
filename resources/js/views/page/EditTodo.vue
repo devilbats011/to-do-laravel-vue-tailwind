@@ -147,12 +147,7 @@
                     >
                         Edit
                     </button>
-                    <!-- <button
-                        @click="validateDate()"
-                        class="md:my-5 my-5 mx-2 px-3 py-1 bg-teal-500 rounded text-white w-full md:w-6/12 bold text-xl"
-                    >
-                        xx
-                    </button> -->
+      
                 </div>
             </div>
         </main>
@@ -162,7 +157,7 @@
 <script>
 import { kHeader } from "../../constant";
 import Navbar from "../component/Navbar.vue";
-// import moment from "moment";
+
 var moment = require("moment-timezone");
 
 export default {
