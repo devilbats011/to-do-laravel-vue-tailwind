@@ -8,14 +8,18 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TodoApiTest extends TestCase
 {
 
+    use RefreshDatabase;
+    
     public function create_get_user_mock()
     {
-        $user = User::where('username', '=', 'mazlan94')->first();
-        if ($user == null) {
+        $user = User::where('username','mazlan94');
+
+        if ($user->first() == null) {
             $user = User::factory()->create();
         }
 
@@ -101,6 +105,20 @@ class TodoApiTest extends TestCase
 
     public function test_edit_the_todo_list_when_user_had_authenticated()
     {
+        
+        $user = $this->create_get_user_mock();
+
+        Sanctum::actingAs($user);
+
+        $randomString = Str::random(3);
+        $response = $this->post('api/todos', [
+            'title' => 'title to-do testing #' . $randomString,
+            'description' => 'lorums plorums vec desc',
+            'date' => null,
+        ], ['Accept' => 'application/json']);
+        $response->assertOk();
+
+        $this->create_a_new_todo();
         $user = $this->create_get_user_mock();
         Sanctum::actingAs($user);
         $todo = Todo::latest()->first();
@@ -135,8 +153,8 @@ class TodoApiTest extends TestCase
     }
 
     private function clear_user_mock_and_all_user_todos(){
-        $user = $this->create_get_user_mock();
-        $user= User::where('username', '=', 'mazlan94')->first();
+        $this->create_get_user_mock();
+        $user = User::where('username', '=', 'mazlan94')->first();
         if($user->todos()->count() > 0){
             $userId = $user->todos()->get()[0]->user_id;
             DB::table('todos')->where('user_id', '=', $userId)->delete();
