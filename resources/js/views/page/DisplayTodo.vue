@@ -1,6 +1,7 @@
 <template>
   <div>
     <Navbar></Navbar>
+    
     <main class="w-11/12 bg-white mx-auto my-5 py-3 px-4 rounded">
       <h1 class="font-bold text-xl text-center text-cyan-700 mt-2 mb-4">
         To-do List
@@ -62,8 +63,9 @@
       </div>
   <!--    -->
     <Pagination v-on:changePageEmit="onChangePage" :totalPage="totalPage" :pageDetails="pageDetails"  ></Pagination>
-
+    <AlertBlock/>
     </main>
+
   </div>
 </template>
 
@@ -72,11 +74,13 @@ import moment from "moment";
 import { kHeader } from "../../constant";
 import Navbar from "../component/Navbar.vue";
 import Pagination from "./../component/Pagination.vue";
+import AlertBlock from "./../component/AlertBlock.vue";
 
 export default {
   components: {
     Navbar,
     Pagination,
+    AlertBlock,
   },
   mounted() {
     const accessToken = localStorage.getItem("access_token");

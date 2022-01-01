@@ -68,6 +68,7 @@
                 </div>
             </section>
         </div>
+         <AlertBlock />
     </main>
 </template>
 
@@ -75,12 +76,14 @@
 import { kHeader } from "../../constant";
 import { serviceGetUserInfo } from "../../services/api";
 import Navbar from "../component/Navbar.vue";
+import AlertBlock from "../component/AlertBlock.vue";
 import PlanPackageCard from "../component/PlanPackageCard.vue";
 
 export default {
     components: {
         Navbar,
         PlanPackageCard,
+        AlertBlock
     },
     async mounted() {
         const accessToken = localStorage.getItem("access_token");
