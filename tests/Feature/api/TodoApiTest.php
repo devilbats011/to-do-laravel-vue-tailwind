@@ -16,7 +16,24 @@ class TodoApiTest extends TestCase
 {
 
     use RefreshDatabase;
-//register test
+
+    public function test_user_succesfully_registered()
+    {
+        $this->withoutExceptionHandling();
+
+        $registerData = ['name' =>'coolguy','username' =>'coolguy94','email' => 'coolguy@cool.com','phone'=> '0123456789', 'password' => 'pass12345'];
+
+        $this->json('POST', 'api/register', $registerData, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                    'access_token' ,
+                    'token_type' ,
+                    'message_status' ,
+                    "message",
+                    'to',
+            ]);
+      
+    }
 
     public function test_user_succesfully_login_with_Email_and_password()
     {
@@ -361,7 +378,7 @@ class TodoApiTest extends TestCase
 
 
 
-    public function test_user_able_to_logout()
+    public function test_user_logout()
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
