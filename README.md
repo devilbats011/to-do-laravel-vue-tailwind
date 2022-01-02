@@ -1,28 +1,18 @@
-# THIS README IS STILL NOT FINISH...
-
 # SIMPLE TODO WEB APP
-the TODO App Craft with `Laravel,Vue and Tailwind`.
+This Todo App Craft with `Laravel,Vue and Tailwind`.
 server localhost with xammp and mysql database
 
- ## __To run this project there are few thing to run first__
- run the command below in the project terminal :
+ ## You might want to configure those thing first in order to work properly, such as :
  ```
  - composer install
  - npm install
  - npm run watch
- - php artisan migrate
+ - configure .env file
+ - php artisan migrate or php artisan migrate:fresh
+ - php artisan db:seed --class=BadgeSeeder
  - php artisan key:generate
+ - php artisan queue:work 
  ```
- Insert Your database infomation in __.env__ file:
- ```
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE={INSERT_DATABASE_NAME}
-DB_USERNAME=root
-DB_PASSWORD=
- ```
-
 
 ## Unit Test
 Unit Test __TodoApiTest.php__ located at __`tests > Fetaure > api`__
@@ -37,14 +27,6 @@ Unit Test __TodoApiTest.php__ located at __`tests > Fetaure > api`__
 <!-- * Use __database driver__ by updating QUEUE_CONNECTION variable in your application's __.env__ file.
  -->
 
-<!-- ```
-QUEUE_CONNECTION=database
-``` -->
-
-<!-- * Change timezone to __'Asia/Kuala_Lumpur'__ in __app.php__ file in __config__ folder
- ```
-'timezone' => 'Asia/Kuala_Lumpur', 
- ``` -->
  * Insert Mail Credential  in __.env__ , for testing purpose you may use [Mailtrap](https://mailtrap.io/)
 
  ```
