@@ -3070,7 +3070,7 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
                     // console.log(content);
                     if (content.message_status === "SUCCESS") {
                       isMilestone = _this.handleMilestones(content.milestones, content.to);
-                      if (!isMilestone) valthisVue.$router.push({
+                      if (!isMilestone) thisVue.$router.push({
                         path: "/" + content.to,
                         query: {
                           alertMessage: content.message

@@ -252,7 +252,7 @@ export default {
                         // console.log(content);
                         if (content.message_status === "SUCCESS") {
                             const isMilestone = this.handleMilestones(content.milestones, content.to)
-                            if(!isMilestone) valthisVue.$router.push({ path: "/" + content.to,query:{alertMessage:content.message} });
+                            if(!isMilestone) thisVue.$router.push({ path: "/" + content.to,query:{alertMessage:content.message} });
                         }
                     } else if (rawContent.status == 403) {
                         // console.log("403-", content);
