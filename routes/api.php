@@ -26,6 +26,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('/todos', TodoController::class)->only((['update','destroy','index']));
     Route::get('/user', [AuthApiController::class, 'getTheUser'])->name('auth.user');
     Route::get('/go-premium', [UserController::class, 'goPremium'])->name('user.premium');
+    Route::get('/set-read/{badge_id}', [UserController::class, 'setRead'])->name('user.set_read');
     Route::get('/logout', [AuthApiController::class, 'logout'])->name('auth.logout');
 
 

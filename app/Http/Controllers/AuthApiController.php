@@ -87,6 +87,7 @@ class AuthApiController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'message_status' => "SUCCESS",
+            "message" => "succesfully register account",
             'to' => "",
         ]);
     }

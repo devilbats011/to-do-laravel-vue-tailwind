@@ -163,6 +163,7 @@ var moment = require("moment-timezone");
 export default {
     mounted() {
         // console.log( this.$router.history.current.query, this.$router.history.current.params," -- query,params");
+       
         const accessToken = localStorage.getItem("access_token");
         if (accessToken == null) this.$router.push({ path: "/" });
 
@@ -240,10 +241,10 @@ export default {
                 }),
             }).then(async (rawContent) => {
                 const content = await rawContent.json();
+                    console.log(content,"xttx");
                 if (rawContent.status == 200) {
-                    // console.log(content);
                     if (content.message_status == "SUCCESS")
-                        thisVue.$router.push({ path: "/" + content.to });
+                        thisVue.$router.push({ path: "/" + content.to ,query:{alertMessage:content.message}});
                 }
                 else if(rawContent.status == 422) {
                     // console.log("422-",content)

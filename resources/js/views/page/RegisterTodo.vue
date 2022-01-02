@@ -74,10 +74,10 @@ export default {
             })
                 .then(async (rawResponse) => {
                     const content = await rawResponse.json();
-                    console.log("reg-content:", content,rawResponse);
+                    // console.log("reg-content:", content,rawResponse);
                     if (rawResponse.status == 200) {
                       if(content.message_status == "SUCCESS")
-                        thisVue.$router.push({ path: "/"})
+                        thisVue.$router.push({ path: "/",query:{alertMessage:content.message}})
                     }
                     if (rawResponse.status == 422){
                         //validation error

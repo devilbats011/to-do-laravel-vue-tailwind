@@ -16,6 +16,7 @@ class TodoApiTest extends TestCase
 {
 
     use RefreshDatabase;
+//register test
 
     public function test_user_succesfully_login_with_Email_and_password()
     {
@@ -198,6 +199,7 @@ class TodoApiTest extends TestCase
             ['check-todo-count' =>
             array(
                 'permission' => 'DENIED',
+                'message' => 'Go premium for unlimited todos! free user only limited to 10 todos only',
                 'redirect' => 'plan-package',
                 'to' => ''
             )]);
@@ -226,6 +228,7 @@ class TodoApiTest extends TestCase
         ['check-todo-count' =>
         array(
             'permission' => 'ALLOW',
+            'message' => '',
             'redirect' => '',
             'to' => 'create'
         )]);
@@ -239,6 +242,7 @@ class TodoApiTest extends TestCase
         $response = $this->get('api/go-premium', ['Accept' => 'application/json']);
         $response->assertOk()->assertJsonStructure([
             'message_status',
+            'message',
             'to'
         ]);
 

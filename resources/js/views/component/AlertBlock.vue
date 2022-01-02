@@ -1,14 +1,14 @@
 <template>
     <div
-        class="opacity-90 fixed top-0 left-0 right-0 bg-slate-100 border-t-4 border-slate-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
+        class="opacity-80 fixed top-0 left-0 right-0 bg-gradient-to-r from-teal-700 to-cyan-300 border-t-4 border-slate-500 rounded-b text-white px-4 py-3 shadow-md"
         :class="hidden ? 'hidden' : ''"
-        @click="hide()"
+        @click="clickHide()"
         role="alert"
     >
         <div class="flex">
-            <div class="py-1">
+            <div class="ml-10">
                 <svg
-                    class="fill-current h-6 w-6 text-teal-900 mr-4"
+                    class="fill-current h-6 w-6 text-white mr-4 mt-2"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                 >
@@ -19,7 +19,7 @@
             </div>
             <div>
                 <p class="font-bold">{{ title }}</p>
-                <p class="text-sm">{{ description }}</p>
+                <p class="text-sm">{{ message }}</p>
             </div>
         </div>
     </div>
@@ -27,28 +27,38 @@
 
 <script>
 export default {
-    mounted(){
-      this.hideTime()
+    mounted() {
+        const {alertMessage} = this.$router.history.current.query;
+        console.log('alertMessage:', alertMessage)
+        if(alertMessage !== undefined  && alertMessage !== ""){
+            this.message = alertMessage
+             
+            this.hidden = false
+            this.hideDelay()
+        }
+        else {
+            this.$router.push({query:{alertMessage:""}});
+        }
     },
     props: {
         title: {
             type: String,
             default: "Message",
         },
-        description: {
-            type: String,
-            default: "",
-        },
-        hidden: {
-            type: Boolean,
-            default: true,
-        },
+ 
+ 
+    },
+    data() {
+        return {
+            message:"",
+            hidden:true
+        }
     },
     methods: {
-        hide() {
+        clickHide() {
             this.hidden = true;
         },
-        hideTime() {
+        hideDelay() {
             const thisVue = this;
             setTimeout(function () {
                 thisVue.hidden = true;

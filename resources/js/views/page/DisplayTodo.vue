@@ -78,6 +78,7 @@ import { kHeader } from "../../constant";
 import Navbar from "../component/Navbar.vue";
 import Pagination from "./../component/Pagination.vue";
 import AlertBlock from "./../component/AlertBlock.vue";
+import  {checkCreate} from '../../services/api';
 
 export default {
     components: {
@@ -133,37 +134,7 @@ export default {
                 });
         },
         serviceCreate() {
-            const thisVue = this;
-            fetch("/api/todos/create", {
-                method: "get",
-                headers: this.vueHeader,
-            })
-                .then(async (rawContent) => {
-                    const content = await rawContent.json();
-                    const checkTodoCount = content["check-todo-count"];
-                    if (rawContent.status == 403) {
-                        let tempString = checkTodoCount.permission;
-                        if (tempString.toUpperCase() === "DENIED") {
-                            console.log("xx", content);
-                            const redirect = checkTodoCount.redirect;
-                            thisVue.$router.push({ path: "/" + redirect });
-                            return null;
-                        }
-                  
-                    } else if (rawContent.status == 200) {
-                        let tempString = checkTodoCount.permission;
-                        if (tempString.toUpperCase() === "ALLOW") {
-                            const to = checkTodoCount.to;
-                            thisVue.$router.push({ path: "/" + to });
-                            // const to = checkTodoCount.to;
-                            // thisVue.$router.push({ path: "/" + to });
-                            return null;
-                        }
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+            checkCreate(this);
         },
         serviceDelete(event) {
             const id = event.target.getAttribute("data-id");
@@ -182,9 +153,10 @@ export default {
                         this.toDos = newToDos;
                         this.totalPage = this.totalPage - 1;
                         this.paginate(this.currentPage);
+                        // this.$router.push({ path: "/display",query:{alertMessage:content.message}});
+                        
                     } else if (rawContent.status == 403) {
                         console.log("del-403-", content);
-                        //this.$router.push({ path: "/" + content.to });
                     }
                 })
                 .catch((err) => {

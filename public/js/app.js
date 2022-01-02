@@ -2198,27 +2198,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
-    this.hideTime();
+    var alertMessage = this.$router.history.current.query.alertMessage;
+    console.log('alertMessage:', alertMessage);
+
+    if (alertMessage !== undefined && alertMessage !== "") {
+      this.message = alertMessage;
+      this.hidden = false;
+      this.hideDelay();
+    } else {
+      this.$router.push({
+        query: {
+          alertMessage: ""
+        }
+      });
+    }
   },
   props: {
     title: {
       type: String,
       "default": "Message"
-    },
-    description: {
-      type: String,
-      "default": ""
-    },
-    hidden: {
-      type: Boolean,
-      "default": true
     }
   },
+  data: function data() {
+    return {
+      message: "",
+      hidden: true
+    };
+  },
   methods: {
-    hide: function hide() {
+    clickHide: function clickHide() {
       this.hidden = true;
     },
-    hideTime: function hideTime() {
+    hideDelay: function hideDelay() {
       var thisVue = this;
       setTimeout(function () {
         thisVue.hidden = true;
@@ -2468,6 +2479,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    goBack: function goBack() {
+      this.$router.go(-1);
+    },
     handleLogout: function handleLogout() {
       var _this2 = this;
 
@@ -2484,7 +2498,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         router.push({
           path: "/",
           query: {
-            logoutMessage: res.data.message
+            alertMessage: res.data.message
           }
         });
       })["catch"](function (err) {
@@ -2772,18 +2786,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _constant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constant */ "./resources/js/constant.js");
 /* harmony import */ var _component_Navbar_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../component/Navbar.vue */ "./resources/js/views/component/Navbar.vue");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2938,6 +2953,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+
 
 
 
@@ -2953,7 +2969,7 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
     if (accessToken == null) this.$router.push({
       path: "/"
     });
-    this.checkCreate(); // console.log(
+    (0,_services_api__WEBPACK_IMPORTED_MODULE_3__.checkCreate)(this, 'create'); // console.log(
     //     this.$router.history.current.query,
     // );
   },
@@ -2981,83 +2997,6 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
     }
   },
   methods: {
-    checkCreate: function checkCreate() {
-      var thisVue = this;
-      fetch("/api/todos/create", {
-        method: "get",
-        headers: this.vueHeader
-      }).then( /*#__PURE__*/function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(rawContent) {
-          var content, checkTodoCount, tempString, redirect, _tempString, to;
-
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return rawContent.json();
-
-                case 2:
-                  content = _context.sent;
-                  checkTodoCount = content["check-todo-count"];
-
-                  if (!(rawContent.status == 403)) {
-                    _context.next = 13;
-                    break;
-                  }
-
-                  tempString = checkTodoCount.permission;
-
-                  if (!(tempString.toUpperCase() === "DENIED")) {
-                    _context.next = 11;
-                    break;
-                  }
-
-                  console.log("xx", content);
-                  redirect = checkTodoCount.redirect;
-                  thisVue.$router.push({
-                    path: "/" + redirect
-                  });
-                  return _context.abrupt("return", null);
-
-                case 11:
-                  _context.next = 19;
-                  break;
-
-                case 13:
-                  if (!(rawContent.status == 200)) {
-                    _context.next = 19;
-                    break;
-                  }
-
-                  _tempString = checkTodoCount.permission;
-
-                  if (!(_tempString.toUpperCase() === "ALLOW")) {
-                    _context.next = 19;
-                    break;
-                  }
-
-                  to = checkTodoCount.to;
-                  thisVue.$router.push({
-                    path: "/" + to
-                  });
-                  return _context.abrupt("return", null);
-
-                case 19:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee);
-        }));
-
-        return function (_x) {
-          return _ref.apply(this, arguments);
-        };
-      }())["catch"](function (err) {
-        console.error(err);
-      });
-    },
     numberedToggleReminder: function numberedToggleReminder(event) {
       this.toggle_reminder = event.target.checked == true ? 1 : 0;
     },
@@ -3078,11 +3017,31 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
       this.descriptionError = "";
       this.messageError = "";
     },
+    handleMilestones: function handleMilestones(milestones, to) {
+      if (milestones.notficition_status == "unread") {
+        var message = "Congartulation \uD83C\uDF89!  You have reached ".concat(milestones.achievements, " achievements and received ").concat(milestones.badge_name, " Badge~! ");
+        this.$router.push({
+          path: "/" + to,
+          query: {
+            alertMessage: message
+          }
+        });
+        fetch("/api/set-read/".concat(milestones.badge_id), {
+          method: "get",
+          headers: _objectSpread(_objectSpread({}, _constant__WEBPACK_IMPORTED_MODULE_1__.kHeader), {}, {
+            Authorization: this.token
+          })
+        });
+        return true;
+      } else return false;
+    },
     serviceStore: function serviceStore() {
+      var _this = this;
+
       this.clearErrors();
       this.btnDisabled = true;
-      var thisVue = this;
-      var id = thisVue.$router.history.current.query.id;
+      var thisVue = this; // const id = thisVue.$router.history.current.query.id;
+
       fetch("/api/todos", {
         method: "post",
         headers: _objectSpread(_objectSpread({}, _constant__WEBPACK_IMPORTED_MODULE_1__.kHeader), {}, {
@@ -3095,33 +3054,36 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
           toggle_reminder: this.toggle_reminder
         })
       }).then( /*#__PURE__*/function () {
-        var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(rawContent) {
-          var content, key;
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(rawContent) {
+          var content, isMilestone, key;
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
             while (1) {
-              switch (_context2.prev = _context2.next) {
+              switch (_context.prev = _context.next) {
                 case 0:
-                  _context2.next = 2;
+                  _context.next = 2;
                   return rawContent.json();
 
                 case 2:
-                  content = _context2.sent;
+                  content = _context.sent;
 
                   if (rawContent.status === 200) {
-                    console.log(content);
-
+                    // console.log(content);
                     if (content.message_status === "SUCCESS") {
-                      thisVue.$router.push({
-                        path: "/" + content.to
+                      isMilestone = _this.handleMilestones(content.milestones, content.to);
+                      if (!isMilestone) valthisVue.$router.push({
+                        path: "/" + content.to,
+                        query: {
+                          alertMessage: content.message
+                        }
                       });
                     }
                   } else if (rawContent.status == 403) {
-                    console.log("403-", content);
+                    // console.log("403-", content);
                     thisVue.$router.push({
                       path: "/" + content.to
                     });
                   } else if (rawContent.status == 422) {
-                    console.log("422-", content);
+                    // console.log("422-", content);
                     thisVue.messageError = content.message;
 
                     for (key in content.errors) {
@@ -3133,14 +3095,14 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
 
                 case 4:
                 case "end":
-                  return _context2.stop();
+                  return _context.stop();
               }
             }
-          }, _callee2);
+          }, _callee);
         }));
 
-        return function (_x2) {
-          return _ref2.apply(this, arguments);
+        return function (_x) {
+          return _ref.apply(this, arguments);
         };
       }())["catch"](function (err) {
         console.error(err);
@@ -3172,6 +3134,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_Navbar_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../component/Navbar.vue */ "./resources/js/views/component/Navbar.vue");
 /* harmony import */ var _component_Pagination_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./../component/Pagination.vue */ "./resources/js/views/component/Pagination.vue");
 /* harmony import */ var _component_AlertBlock_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../component/AlertBlock.vue */ "./resources/js/views/component/AlertBlock.vue");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -3258,6 +3221,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+
 
 
 
@@ -3341,83 +3305,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     serviceCreate: function serviceCreate() {
-      var thisVue = this;
-      fetch("/api/todos/create", {
-        method: "get",
-        headers: this.vueHeader
-      }).then( /*#__PURE__*/function () {
-        var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(rawContent) {
-          var content, checkTodoCount, tempString, redirect, _tempString, to;
-
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  _context2.next = 2;
-                  return rawContent.json();
-
-                case 2:
-                  content = _context2.sent;
-                  checkTodoCount = content["check-todo-count"];
-
-                  if (!(rawContent.status == 403)) {
-                    _context2.next = 13;
-                    break;
-                  }
-
-                  tempString = checkTodoCount.permission;
-
-                  if (!(tempString.toUpperCase() === "DENIED")) {
-                    _context2.next = 11;
-                    break;
-                  }
-
-                  console.log("xx", content);
-                  redirect = checkTodoCount.redirect;
-                  thisVue.$router.push({
-                    path: "/" + redirect
-                  });
-                  return _context2.abrupt("return", null);
-
-                case 11:
-                  _context2.next = 19;
-                  break;
-
-                case 13:
-                  if (!(rawContent.status == 200)) {
-                    _context2.next = 19;
-                    break;
-                  }
-
-                  _tempString = checkTodoCount.permission;
-
-                  if (!(_tempString.toUpperCase() === "ALLOW")) {
-                    _context2.next = 19;
-                    break;
-                  }
-
-                  to = checkTodoCount.to;
-                  thisVue.$router.push({
-                    path: "/" + to
-                  }); // const to = checkTodoCount.to;
-                  // thisVue.$router.push({ path: "/" + to });
-
-                  return _context2.abrupt("return", null);
-
-                case 19:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee2);
-        }));
-
-        return function (_x2) {
-          return _ref2.apply(this, arguments);
-        };
-      }())["catch"](function (err) {
-        console.error(err);
-      });
+      (0,_services_api__WEBPACK_IMPORTED_MODULE_6__.checkCreate)(this);
     },
     serviceDelete: function serviceDelete(event) {
       var _this2 = this;
@@ -3427,17 +3315,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         method: "delete",
         headers: this.vueHeader
       }).then( /*#__PURE__*/function () {
-        var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(rawContent) {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(rawContent) {
           var content, tempArray, newToDos;
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
             while (1) {
-              switch (_context3.prev = _context3.next) {
+              switch (_context2.prev = _context2.next) {
                 case 0:
-                  _context3.next = 2;
+                  _context2.next = 2;
                   return rawContent.json();
 
                 case 2:
-                  content = _context3.sent;
+                  content = _context2.sent;
 
                   if (rawContent.status == 200) {
                     tempArray = _this2.toDos;
@@ -3447,21 +3335,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     _this2.toDos = newToDos;
                     _this2.totalPage = _this2.totalPage - 1;
 
-                    _this2.paginate(_this2.currentPage);
+                    _this2.paginate(_this2.currentPage); // this.$router.push({ path: "/display",query:{alertMessage:content.message}});
+
                   } else if (rawContent.status == 403) {
-                    console.log("del-403-", content); //this.$router.push({ path: "/" + content.to });
+                    console.log("del-403-", content);
                   }
 
                 case 4:
                 case "end":
-                  return _context3.stop();
+                  return _context2.stop();
               }
             }
-          }, _callee3);
+          }, _callee2);
         }));
 
-        return function (_x3) {
-          return _ref3.apply(this, arguments);
+        return function (_x2) {
+          return _ref2.apply(this, arguments);
         };
       }())["catch"](function (err) {
         console.error(err);
@@ -3777,11 +3666,14 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
 
                 case 2:
                   content = _context.sent;
+                  console.log(content, "xttx");
 
                   if (rawContent.status == 200) {
-                    // console.log(content);
                     if (content.message_status == "SUCCESS") thisVue.$router.push({
-                      path: "/" + content.to
+                      path: "/" + content.to,
+                      query: {
+                        alertMessage: content.message
+                      }
                     });
                   } else if (rawContent.status == 422) {
                     // console.log("422-",content)
@@ -3794,7 +3686,7 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
                     thisVue.errorToggle = true;
                   }
 
-                case 4:
+                case 5:
                 case "end":
                   return _context.stop();
               }
@@ -3832,7 +3724,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_TitleTodo_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../component/TitleTodo.vue */ "./resources/js/views/component/TitleTodo.vue");
 /* harmony import */ var _component_ButtonTodo_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../component/ButtonTodo.vue */ "./resources/js/views/component/ButtonTodo.vue");
 /* harmony import */ var _component_InputTodo_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../component/InputTodo.vue */ "./resources/js/views/component/InputTodo.vue");
-/* harmony import */ var _constant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./../../constant */ "./resources/js/constant.js");
+/* harmony import */ var _component_AlertBlock_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../component/AlertBlock.vue */ "./resources/js/views/component/AlertBlock.vue");
+/* harmony import */ var _constant__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../../constant */ "./resources/js/constant.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -3862,6 +3755,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+
 
 
 
@@ -3870,11 +3765,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   components: {
     TitleTodo: _component_TitleTodo_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     ButtonTodo: _component_ButtonTodo_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-    InputTodo: _component_InputTodo_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    InputTodo: _component_InputTodo_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    AlertButton: _component_AlertBlock_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   name: "LoginTodo",
   data: function data() {
     return {
+      messageObject: {},
       email_or_username: "",
       password: "",
       loginDisabled: false,
@@ -3883,12 +3780,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   mounted: function mounted() {
-    this._header = _constant__WEBPACK_IMPORTED_MODULE_4__.kHeader;
+    this._header = _constant__WEBPACK_IMPORTED_MODULE_5__.kHeader;
     if (localStorage.getItem("access_token") != null) this.$router.push({
       path: "/display"
     });
   },
   methods: {
+    // alertMessageCallback:  () => () => {
+    // },
     getSvgLock: function getSvgLock() {
       return "images/lock.svg";
     },
@@ -4159,7 +4058,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   if (rawResponse.status == 200) {
                     console.log("premimum-response:", response);
                     if (response.message_status == "SUCCESS") thisVue.$router.push({
-                      path: "/" + response.to
+                      path: "/" + response.to,
+                      query: {
+                        alertMessage: response.message
+                      }
                     });
                   }
 
@@ -4289,11 +4191,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 case 2:
                   content = _context.sent;
-                  console.log("reg-content:", content, rawResponse);
 
+                  // console.log("reg-content:", content,rawResponse);
                   if (rawResponse.status == 200) {
                     if (content.message_status == "SUCCESS") thisVue.$router.push({
-                      path: "/"
+                      path: "/",
+                      query: {
+                        alertMessage: content.message
+                      }
                     });
                   }
 
@@ -4309,7 +4214,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
                   }
 
-                case 6:
+                case 5:
                 case "end":
                   return _context.stop();
               }
@@ -4520,7 +4425,8 @@ var kHeader = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "serviceGetUserInfo": () => (/* binding */ serviceGetUserInfo)
+/* harmony export */   "serviceGetUserInfo": () => (/* binding */ serviceGetUserInfo),
+/* harmony export */   "checkCreate": () => (/* binding */ checkCreate)
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
@@ -4538,15 +4444,14 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
+var token = localStorage.getItem("access_token");
 var serviceGetUserInfo = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-    var token;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            token = localStorage.getItem("access_token");
-            _context.next = 3;
+            _context.next = 2;
             return axios({
               method: "get",
               url: "/api/user",
@@ -4563,10 +4468,10 @@ var serviceGetUserInfo = /*#__PURE__*/function () {
               console.error(err);
             });
 
-          case 3:
+          case 2:
             return _context.abrupt("return", _context.sent);
 
-          case 4:
+          case 3:
           case "end":
             return _context.stop();
         }
@@ -4576,6 +4481,108 @@ var serviceGetUserInfo = /*#__PURE__*/function () {
 
   return function serviceGetUserInfo() {
     return _ref.apply(this, arguments);
+  };
+}();
+var checkCreate = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(thisVue) {
+    var pageName,
+        _args3 = arguments;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            pageName = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : "";
+            fetch("/api/todos/create", {
+              method: "get",
+              headers: _objectSpread(_objectSpread({}, _constant__WEBPACK_IMPORTED_MODULE_1__.kHeader), {}, {
+                Authorization: "".concat(token)
+              })
+            }).then( /*#__PURE__*/function () {
+              var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(rawContent) {
+                var content, checkTodoCount, tempString, message, redirect, _tempString, to;
+
+                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        _context2.next = 2;
+                        return rawContent.json();
+
+                      case 2:
+                        content = _context2.sent;
+                        checkTodoCount = content["check-todo-count"];
+                        console.log("xx", content);
+
+                        if (!(rawContent.status == 403)) {
+                          _context2.next = 14;
+                          break;
+                        }
+
+                        tempString = checkTodoCount.permission;
+                        message = checkTodoCount.message;
+
+                        if (!(tempString.toUpperCase() === "DENIED")) {
+                          _context2.next = 12;
+                          break;
+                        }
+
+                        redirect = checkTodoCount.redirect;
+                        thisVue.$router.push({
+                          path: "/" + redirect,
+                          query: {
+                            alertMessage: message
+                          }
+                        });
+                        return _context2.abrupt("return", null);
+
+                      case 12:
+                        _context2.next = 20;
+                        break;
+
+                      case 14:
+                        if (!(rawContent.status == 200)) {
+                          _context2.next = 20;
+                          break;
+                        }
+
+                        _tempString = checkTodoCount.permission;
+
+                        if (!(_tempString.toUpperCase() === "ALLOW")) {
+                          _context2.next = 20;
+                          break;
+                        }
+
+                        to = checkTodoCount.to;
+                        if (pageName != to) thisVue.$router.push({
+                          path: "/" + to
+                        });
+                        return _context2.abrupt("return", null);
+
+                      case 20:
+                      case "end":
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2);
+              }));
+
+              return function (_x2) {
+                return _ref3.apply(this, arguments);
+              };
+            }())["catch"](function (err) {
+              console.error(err);
+            });
+
+          case 2:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+
+  return function checkCreate(_x) {
+    return _ref2.apply(this, arguments);
   };
 }();
 
@@ -46369,22 +46376,22 @@ var render = function () {
     "div",
     {
       staticClass:
-        "opacity-90 fixed top-0 left-0 right-0 bg-slate-100 border-t-4 border-slate-500 rounded-b text-teal-900 px-4 py-3 shadow-md",
+        "opacity-80 fixed top-0 left-0 right-0 bg-gradient-to-r from-teal-700 to-cyan-300 border-t-4 border-slate-500 rounded-b text-white px-4 py-3 shadow-md",
       class: _vm.hidden ? "hidden" : "",
       attrs: { role: "alert" },
       on: {
         click: function ($event) {
-          return _vm.hide()
+          return _vm.clickHide()
         },
       },
     },
     [
       _c("div", { staticClass: "flex" }, [
-        _c("div", { staticClass: "py-1" }, [
+        _c("div", { staticClass: "ml-10" }, [
           _c(
             "svg",
             {
-              staticClass: "fill-current h-6 w-6 text-teal-900 mr-4",
+              staticClass: "fill-current h-6 w-6 text-white mr-4 mt-2",
               attrs: {
                 xmlns: "http://www.w3.org/2000/svg",
                 viewBox: "0 0 20 20",
@@ -46403,9 +46410,7 @@ var render = function () {
         _c("div", [
           _c("p", { staticClass: "font-bold" }, [_vm._v(_vm._s(_vm.title))]),
           _vm._v(" "),
-          _c("p", { staticClass: "text-sm" }, [
-            _vm._v(_vm._s(_vm.description)),
-          ]),
+          _c("p", { staticClass: "text-sm" }, [_vm._v(_vm._s(_vm.message))]),
         ]),
       ]),
     ]
@@ -46597,7 +46602,7 @@ var render = function () {
                 "bg-gray-500 hover:bg-gray-700 mx-2 px-5 py-2 rounded text-white font-bold ",
               on: {
                 click: function ($event) {
-                  return _vm.$router.go(-1)
+                  return _vm.goBack()
                 },
               },
             },
@@ -47926,6 +47931,8 @@ var render = function () {
         _c("p", { staticClass: "text-center text-gray-500 text-xs mt-6" }, [
           _vm._v("\n                © 2021 TO-DO\n            "),
         ]),
+        _vm._v(" "),
+        _c("AlertButton"),
       ],
       1
     ),

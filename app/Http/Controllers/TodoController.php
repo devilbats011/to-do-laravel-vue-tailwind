@@ -169,6 +169,7 @@ class TodoController extends Controller
             'check-todo-count' =>
         [
             'permission' => $request->get('permission'),
+            'message' => $request->get('message'),
             'redirect' => $request->get('redirect'),
             'to' => $request->get('to'),
         ]

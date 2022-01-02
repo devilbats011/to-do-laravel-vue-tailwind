@@ -22,8 +22,9 @@ class checkToDoCount
         //to createTodo.vue page
         $to = "create";
         $permission = "ALLOW";
+        $message = "";
         $redirect = "";
-        $count = 0;
+        
         /** @var \App\Models\user */
         $user =  Auth::user();
         
@@ -33,15 +34,15 @@ class checkToDoCount
         {
            $id = Auth::id();
            $_count = Todo::where('user_id',$id)->count();
-           $count = $_count;
             if($_count >= 10 && $user->user_type != "premium_user") {
                 $to = "";
                 $permission = "DENIED";
+                $message = "Go premium for unlimited todos! free user only limited to 10 todos only";
                 $redirect = "plan-package";
             }
         }
 
-        $request->attributes->add(['to' =>  $to,'permission' =>  $permission,'redirect' => $redirect]);
+        $request->attributes->add(['to' =>  $to,'permission' =>  $permission,'message' => $message,'redirect' => $redirect]);
         return $next($request);
     }
 }

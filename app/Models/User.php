@@ -118,43 +118,11 @@ class User extends Authenticatable
 
     }
 
-    public function setRead($badge_id){
-        $badge_user = DB::table('badge_user')->where('user_id',$this->id)->where('badge_id', $badge_id)->first();
+    public function onRead($badge_id){
+        $badge_user = DB::table('badge_user')->where('user_id',$this->id)->where('badge_id', $badge_id);
         $noti_status = "read";
         $badge_user->update(array('noti_status' => $noti_status));
     }
 
-
-
-        // $badge = $this->badges();
-        // $badge->find(1) == null
-        // if ($this['achievements'] > 1 && $badge->find(1) == null) {
-        //     /**
-        //      * @var App\Models\Badge;
-        //      */
-        //     $first_badge = $badge->attach(1);
-        //     return $first_badge->setBadgeUnread();
-        // }
-    /**
-     *
-     * $user->badges()->attach(1,2)
-     * $user->badges()->detach(1,2)
-     * $user->update([achieviement => 1])
-     *         $number = ($_user['count']+1)/10;
-
-    if(is_int($number)){
-    $_user['achievements'] = $number;
-    }
-    badges_users notficitionStatus = none|unread|read
-    todocontroller:store->response[...unread ,ownerId] -> frontend notify user -> frontend requets back to todocontroller:changeToReadStatus:(if(achieviement>1  ..bagde 1 is unread , ) Auth::user->badges()->updateExistingPivot($badgeId, [
-    'notficitionStatus' => 'read',
-    ]);)
-    //$user = User::find(1);
-
-    $user->roles()->updateExistingPivot($roleId, [
-    'active' => false,
-    ]);
-    -> frontend got response unread ->process->frontend request back read
-     */
 
 }

@@ -17,6 +17,7 @@
                     &copy; 2021 TO-DO
                 </p>
           
+        <AlertButton  />
         </form>
     </main>
 </template>
@@ -25,16 +26,20 @@
 import TitleTodo from "../component/TitleTodo.vue";
 import ButtonTodo from "../component/ButtonTodo.vue";
 import InputTodo from "../component/InputTodo.vue";
+import AlertButton from "../component/AlertBlock.vue";
+
 import { kHeader } from "./../../constant";
 export default {
     components: {
         TitleTodo,
         ButtonTodo,
         InputTodo,
+        AlertButton,
     },
     name: "LoginTodo",
     data() {
         return {
+            messageObject:{},
             email_or_username: "",
             password: "",
             loginDisabled: false,
@@ -47,10 +52,15 @@ export default {
         this._header = kHeader;
         if(localStorage.getItem("access_token") != null)
           this.$router.push({ path:"/display" });
+        
+       
 
     },
 
     methods: {
+        // alertMessageCallback:  () => () => {
+
+        // },
         getSvgLock() {
             return "images/lock.svg";
         },

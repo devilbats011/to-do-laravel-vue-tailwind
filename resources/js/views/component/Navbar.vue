@@ -22,7 +22,7 @@
                 </button>
 
                 <button
-                    @click="$router.go(-1)"
+                    @click="goBack()"
                     class="bg-gray-500 hover:bg-gray-700 mx-2 px-5 py-2 rounded text-white font-bold "
                 >
                    Back 
@@ -51,6 +51,9 @@ export default {
         };
     },
     methods: {
+        goBack(){
+            this.$router.go(-1)
+        },
         handleLogout() {
             const router = this.$router;
             const token = localStorage.getItem("access_token");
@@ -65,7 +68,7 @@ export default {
 
                     router.push({
                         path: "/",
-                        query: { logoutMessage: res.data.message },
+                        query: { alertMessage: res.data.message },
                     });
                 })
                 .catch((err) => {

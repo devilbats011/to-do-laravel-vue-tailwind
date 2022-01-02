@@ -14,7 +14,18 @@ class UserController extends Controller {
 
         return response()->json([
             "message_status" => "SUCCESS",
+            "message" => "Thank you for becomimg Premium Member!",
             "to" => "display"
         ]);
+    }
+
+    function setRead($badge_id) {
+        /** @var App\Models\User */
+        $user = Auth::user();
+        $user ->onRead($badge_id);
+
+        return response()->json([
+            "message" => "unread had set to read",
+        ],200);
     }
 }

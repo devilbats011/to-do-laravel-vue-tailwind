@@ -155,6 +155,8 @@
 <script>
 import { kHeader } from "../../constant";
 import Navbar from "../component/Navbar.vue";
+import  {checkCreate} from '../../services/api';
+
 var moment = require("moment-timezone");
 
 export default {
@@ -166,7 +168,7 @@ export default {
         this.token = accessToken;
         if (accessToken == null) this.$router.push({ path: "/" });
 
-        this.checkCreate();
+        checkCreate(this,'create');
 
         // console.log(
         //     this.$router.history.current.query,
@@ -196,37 +198,6 @@ export default {
         },
     },
     methods: {
-        checkCreate() {
-            const thisVue = this;
-            fetch("/api/todos/create", {
-                method: "get",
-                headers: this.vueHeader,
-            })
-            .then(async (rawContent) => {
-                const content = await rawContent.json();
-                const checkTodoCount = content["check-todo-count"];
-                if (rawContent.status == 403) {
-                    let tempString = checkTodoCount.permission;
-                    if (tempString.toUpperCase() === "DENIED") {
-                        console.log("xx", content);
-                        const redirect = checkTodoCount.redirect;
-                        thisVue.$router.push({ path: "/" + redirect });
-                        return null;
-                    }
-                }
-                else if(rawContent.status == 200){
-                    let tempString = checkTodoCount.permission;
-                    if (tempString.toUpperCase() === "ALLOW") {
-                        const to = checkTodoCount.to;
-                        thisVue.$router.push({ path: "/" + to });
-                        return null;
-                    }
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        },
         numberedToggleReminder(event) {
             this.toggle_reminder = event.target.checked == true ? 1 : 0;
         },
@@ -246,11 +217,25 @@ export default {
             this.descriptionError = "";
             this.messageError = "";
         },
+        handleMilestones(milestones,to){
+            if(milestones.notficition_status == "unread" ){
+                const message = `Congartulation 🎉!  You have reached ${milestones.achievements} achievements and received ${milestones.badge_name} Badge~! ` ;
+                this.$router.push({ path: "/" + to ,query:{alertMessage: message} });
+                fetch(`/api/set-read/${milestones.badge_id}`,{
+                    method: "get",
+                    headers: { ...kHeader, Authorization: this.token }
+                })
+
+                return true;
+            }
+            else return false;
+
+        },
         serviceStore() {
             this.clearErrors();
             this.btnDisabled = true;
             const thisVue = this;
-            const id = thisVue.$router.history.current.query.id;
+            // const id = thisVue.$router.history.current.query.id;
             fetch(`/api/todos`, {
                 method: "post",
                 headers: { ...kHeader, Authorization: this.token },
@@ -264,15 +249,16 @@ export default {
                 .then(async (rawContent) => {
                     const content = await rawContent.json();
                     if (rawContent.status === 200) {
-                        console.log(content);
+                        // console.log(content);
                         if (content.message_status === "SUCCESS") {
-                            thisVue.$router.push({ path: "/" + content.to });
+                            const isMilestone = this.handleMilestones(content.milestones, content.to)
+                            if(!isMilestone) valthisVue.$router.push({ path: "/" + content.to,query:{alertMessage:content.message} });
                         }
                     } else if (rawContent.status == 403) {
-                        console.log("403-", content);
+                        // console.log("403-", content);
                         thisVue.$router.push({ path: "/" + content.to });
                     } else if (rawContent.status == 422) {
-                        console.log("422-", content);
+                        // console.log("422-", content);
                         thisVue.messageError = content.message;
                         for (var key in content.errors) {
                             thisVue[`${key}Error`] = content.errors[key][0];

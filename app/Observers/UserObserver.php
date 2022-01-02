@@ -14,6 +14,7 @@ class UserObserver
      */
     public function created(User $user)
     {
+        //if there is no data in badge table inside DB, no error :D and no badge attached.
         $user->setAllBadge();
     }
 

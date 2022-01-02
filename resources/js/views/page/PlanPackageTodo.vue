@@ -116,7 +116,7 @@ export default {
                     if (rawResponse.status == 200) {
                         console.log("premimum-response:", response);
                         if (response.message_status == "SUCCESS")
-                            thisVue.$router.push({ path: "/" + response.to });
+                            thisVue.$router.push({ path: "/" + response.to, query:{alertMessage:response.message} });
                     }
                 })
                 .catch((err) => {
