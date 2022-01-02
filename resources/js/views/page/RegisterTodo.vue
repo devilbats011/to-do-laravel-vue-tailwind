@@ -7,7 +7,7 @@
             <input-todo :rootClass="'mb-6'" :label="'Email'" :inputCallback="(value)=>email=value" :type="'text'" :error="emailError" :placeholder="'just@bob94.com'" />
             <input-todo :rootClass="'mb-6'" :label="'Phone'" :inputCallback="(value)=>phone=value" :type="'text'" :error="phoneError" :placeholder="'013456789'" />
             <input-todo :rootClass="'mb-6'" :label="'Password'" :inputCallback="(value)=>password=value" :type="'password'" :error="passwordError" :placeholder="'************'" />
-            <button-todo :rootClass="'mb-6 mt-6'" :name="'Register'" :btnClick="serviceRegister" :btnDisabled="registerDisabled" color="purple" />
+            <button-todo :rootClass="'mb-6 mt-6'" :name="'Register'" :btnClick="serviceRegister" :btnDisabled="registerDisabled" />
             <button-todo :rootClass="'mb-6 mt-6'" :name="'Login'" :btnClick="()=>helperTo('/')"  />
             <div>
                 <p class="text-center text-gray-500 text-xs mt-6">

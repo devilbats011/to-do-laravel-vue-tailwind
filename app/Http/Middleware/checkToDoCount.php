@@ -19,7 +19,7 @@ class checkToDoCount
      */
     public function handle(Request $request, Closure $next)
     {
-        //to createTodp.vue page
+        //to createTodo.vue page
         $to = "create";
         $permission = "ALLOW";
         $redirect = "";
@@ -27,6 +27,8 @@ class checkToDoCount
         /** @var \App\Models\user */
         $user =  Auth::user();
         
+        // dd(Todo::get()->count());
+
         if(Auth::check())
         {
            $id = Auth::id();
@@ -39,7 +41,7 @@ class checkToDoCount
             }
         }
 
-        $request->attributes->add(['to' =>  $to,'permission' =>  $permission,'redirect' => $redirect,'count' =>  $count]);
+        $request->attributes->add(['to' =>  $to,'permission' =>  $permission,'redirect' => $redirect]);
         return $next($request);
     }
 }

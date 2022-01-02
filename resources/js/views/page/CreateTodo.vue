@@ -204,8 +204,8 @@ export default {
             })
             .then(async (rawContent) => {
                 const content = await rawContent.json();
-                if (rawContent.status == 200) {
-                    const checkTodoCount = content["check-todo-count"];
+                const checkTodoCount = content["check-todo-count"];
+                if (rawContent.status == 403) {
                     let tempString = checkTodoCount.permission;
                     if (tempString.toUpperCase() === "DENIED") {
                         console.log("xx", content);
@@ -213,8 +213,14 @@ export default {
                         thisVue.$router.push({ path: "/" + redirect });
                         return null;
                     }
-                    // const to = checkTodoCount.to;
-                    // thisVue.$router.push({ path: "/" + to });
+                }
+                else if(rawContent.status == 200){
+                    let tempString = checkTodoCount.permission;
+                    if (tempString.toUpperCase() === "ALLOW") {
+                        const to = checkTodoCount.to;
+                        thisVue.$router.push({ path: "/" + to });
+                        return null;
+                    }
                 }
             })
             .catch((err) => {

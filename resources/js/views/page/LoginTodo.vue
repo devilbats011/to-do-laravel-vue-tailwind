@@ -5,28 +5,14 @@
             <input-todo :rootClass="'mb-4'" :label="'Email/Username'" :inputCallback="(value)=>email_or_username=value" :type="'text'" :placeholder="'email or username'"  />
             <input-todo :rootClass="'mb-2'" :label="'Password'" :inputCallback="(value)=>password=value" :type="'password'" :placeholder="'***********'"  />
 
-            <!-- <div class="mb-4">
-                <label
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    for="username"
-                >
-                    email/username
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="username"
-                    type="text"
-                    placeholder="email or username"
-                    v-model="email_or_username"
-                />
-            </div> -->
+ 
             <div class="mb-6">
                 <p class="text-red-500 text-md italic text-center">
                     {{ errorMessage }}
                 </p>
             </div>
                 <button-todo :rootClass="'my-6 '" :name="'Login'" :btnClick="handleLoginFetch" :btnDisabled="loginDisabled" />
-                <button-todo :rootClass="'my-6'" :name="'Register'" :btnClick="()=>helperTo('/register')" :color="'purple'" />
+                <button-todo :rootClass="'my-6'" :name="'Register'" :btnClick="()=>helperTo('/register')" />
                 <p class="text-center text-gray-500 text-xs mt-6">
                     &copy; 2021 TO-DO
                 </p>

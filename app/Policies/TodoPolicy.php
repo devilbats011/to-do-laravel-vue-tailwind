@@ -39,10 +39,10 @@ class TodoPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
-        //
-    }
+    // public function create(User $user)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can update the model.
@@ -53,7 +53,9 @@ class TodoPolicy
      */
     public function update(User $user, Todo $todo)
     {
-        return $user->id === $todo->user_id;
+        // dd([$user->id, intval($todo->user_id)]);
+        $todoUserId = intval($todo->user_id);
+        return $user->id === $todoUserId;
     }
 
     /**
@@ -65,7 +67,8 @@ class TodoPolicy
      */
     public function delete(User $user, Todo $todo)
     {
-        return $user->id === $todo->user_id;
+        $todoUserId = intval($todo->user_id);
+        return $user->id === $todoUserId;
     }
 
     /**

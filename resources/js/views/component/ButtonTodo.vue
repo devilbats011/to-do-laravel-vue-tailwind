@@ -31,13 +31,13 @@ export default {
             type: Boolean,
             default:false,
         },
-        color: {
+        _btnColor: {
             type: String,
             default: "blue",
         },
     },
     mounted() {
-        this.colorFactory(this.color);
+        this.colorFactory(this._btnColor);
     },
     data() {
         return {

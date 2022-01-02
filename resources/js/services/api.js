@@ -4,7 +4,7 @@ export const serviceGetUserInfo = async () => {
     const token = localStorage.getItem("access_token");
     return await axios({
         method: "get",
-        url: "/api/get-the-user",
+        url: "/api/user",
         headers: { ...kHeader, Authorization: `${token}` },
     })
     .then(function (content) {

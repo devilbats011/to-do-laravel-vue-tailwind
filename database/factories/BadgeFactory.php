@@ -14,7 +14,6 @@ class BadgeFactory extends Factory
      */
     public function definition()
     {
-        $user = User::where('username','mazlan94')->firstOrFail();
         return [
             
         ];

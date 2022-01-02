@@ -24,7 +24,7 @@ Route::post('/register', [AuthApiController::class, 'register'])->name('auth.reg
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('/todos', TodoController::class)->only((['update','destroy','index']));
-    Route::get('/get-the-user', [AuthApiController::class, 'getTheUser'])->name('auth.theuser');
+    Route::get('/user', [AuthApiController::class, 'getTheUser'])->name('auth.user');
     Route::get('/go-premium', [UserController::class, 'goPremium'])->name('user.premium');
     Route::get('/logout', [AuthApiController::class, 'logout'])->name('auth.logout');
 

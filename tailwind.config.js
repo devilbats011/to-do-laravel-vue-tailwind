@@ -8,7 +8,7 @@ module.exports = {
     extend: {},
   },
   variants: {
-    opacity: ({ after }) => after(['disabled'])
+    // opacity: ({ after }) => after(['disabled'])
   },
   plugins: [],
 }

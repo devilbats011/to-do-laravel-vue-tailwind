@@ -2274,13 +2274,13 @@ __webpack_require__.r(__webpack_exports__);
       type: Boolean,
       "default": false
     },
-    color: {
+    _btnColor: {
       type: String,
       "default": "blue"
     }
   },
   mounted: function mounted() {
-    this.colorFactory(this.color);
+    this.colorFactory(this._btnColor);
   },
   data: function data() {
     return {
@@ -2988,7 +2988,8 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
         headers: this.vueHeader
       }).then( /*#__PURE__*/function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(rawContent) {
-          var content, checkTodoCount, tempString, redirect;
+          var content, checkTodoCount, tempString, redirect, _tempString, to;
+
           return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
@@ -2998,13 +2999,13 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
 
                 case 2:
                   content = _context.sent;
+                  checkTodoCount = content["check-todo-count"];
 
-                  if (!(rawContent.status == 200)) {
-                    _context.next = 11;
+                  if (!(rawContent.status == 403)) {
+                    _context.next = 13;
                     break;
                   }
 
-                  checkTodoCount = content["check-todo-count"];
                   tempString = checkTodoCount.permission;
 
                   if (!(tempString.toUpperCase() === "DENIED")) {
@@ -3020,6 +3021,29 @@ var moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-t
                   return _context.abrupt("return", null);
 
                 case 11:
+                  _context.next = 19;
+                  break;
+
+                case 13:
+                  if (!(rawContent.status == 200)) {
+                    _context.next = 19;
+                    break;
+                  }
+
+                  _tempString = checkTodoCount.permission;
+
+                  if (!(_tempString.toUpperCase() === "ALLOW")) {
+                    _context.next = 19;
+                    break;
+                  }
+
+                  to = checkTodoCount.to;
+                  thisVue.$router.push({
+                    path: "/" + to
+                  });
+                  return _context.abrupt("return", null);
+
+                case 19:
                 case "end":
                   return _context.stop();
               }
@@ -3231,6 +3255,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 
@@ -3245,7 +3272,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     var accessToken = localStorage.getItem("access_token");
     if (accessToken == null) this.$router.push({
-      path: '/'
+      path: "/"
     });
     this.vueHeader = _objectSpread(_objectSpread({}, _constant__WEBPACK_IMPORTED_MODULE_2__.kHeader), {}, {
       Authorization: accessToken
@@ -3320,7 +3347,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         headers: this.vueHeader
       }).then( /*#__PURE__*/function () {
         var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(rawContent) {
-          var content, checkTodoCount, tempString, redirect, to;
+          var content, checkTodoCount, tempString, redirect, _tempString, to;
+
           return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
@@ -3330,13 +3358,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 case 2:
                   content = _context2.sent;
+                  checkTodoCount = content["check-todo-count"];
 
-                  if (!(rawContent.status == 200)) {
+                  if (!(rawContent.status == 403)) {
                     _context2.next = 13;
                     break;
                   }
 
-                  checkTodoCount = content["check-todo-count"];
                   tempString = checkTodoCount.permission;
 
                   if (!(tempString.toUpperCase() === "DENIED")) {
@@ -3352,12 +3380,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   return _context2.abrupt("return", null);
 
                 case 11:
+                  _context2.next = 19;
+                  break;
+
+                case 13:
+                  if (!(rawContent.status == 200)) {
+                    _context2.next = 19;
+                    break;
+                  }
+
+                  _tempString = checkTodoCount.permission;
+
+                  if (!(_tempString.toUpperCase() === "ALLOW")) {
+                    _context2.next = 19;
+                    break;
+                  }
+
                   to = checkTodoCount.to;
                   thisVue.$router.push({
                     path: "/" + to
-                  });
+                  }); // const to = checkTodoCount.to;
+                  // thisVue.$router.push({ path: "/" + to });
 
-                case 13:
+                  return _context2.abrupt("return", null);
+
+                case 19:
                 case "end":
                   return _context2.stop();
               }
@@ -3423,7 +3470,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     serviceEdit: function serviceEdit(event) {
       var _this3 = this;
 
-      var id = event.target.getAttribute('data-id');
+      var id = event.target.getAttribute("data-id");
       var tempArray = this.toDos;
       tempArray.map(function (todo) {
         if (todo.id == id) {
@@ -3792,20 +3839,6 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -4516,7 +4549,7 @@ var serviceGetUserInfo = /*#__PURE__*/function () {
             _context.next = 3;
             return axios({
               method: "get",
-              url: "/api/get-the-user",
+              url: "/api/user",
               headers: _objectSpread(_objectSpread({}, _constant__WEBPACK_IMPORTED_MODULE_1__.kHeader), {}, {
                 Authorization: "".concat(token)
               })
@@ -4565,7 +4598,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\ntd,\r\nth {\r\n  padding: 0.5rem;\r\n  border: 1px solid rgb(199, 198, 198);\n}\ntr > td:first-of-type,\r\ntr > th:first-of-type,\r\ntr > td:nth-of-type(n + 4) {\r\n  text-align: center;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\ntd,\r\nth {\r\n    padding: 0.5rem;\r\n    border: 1px solid rgb(199, 198, 198);\n}\ntr > td:first-of-type,\r\ntr > th:first-of-type,\r\ntr > td:nth-of-type(n + 4) {\r\n    text-align: center;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -47337,7 +47370,7 @@ var render = function () {
               staticClass:
                 "font-bold text-xl text-center text-cyan-700 mt-2 mb-4",
             },
-            [_vm._v("\n      To-do List\n    ")]
+            [_vm._v("\n            To-do List\n        ")]
           ),
           _vm._v(" "),
           _c("div", { staticClass: "overflow-auto" }, [
@@ -47357,13 +47390,13 @@ var render = function () {
                     _vm._v(" "),
                     _c("td", [
                       _vm._v(
-                        "\n              " +
+                        "\n                            " +
                           _vm._s(
                             item.toggle_reminder === 1 && item.date != null
                               ? _vm.moment(item.date)
                               : "No Reminder|no date"
                           ) +
-                          "\n            "
+                          "\n                        "
                       ),
                     ]),
                     _vm._v(" "),
@@ -47376,7 +47409,11 @@ var render = function () {
                           attrs: { "data-id": item.id },
                           on: { click: _vm.serviceEdit },
                         },
-                        [_vm._v("\n                Edit\n              ")]
+                        [
+                          _vm._v(
+                            "\n                                Edit\n                            "
+                          ),
+                        ]
                       ),
                     ]),
                     _vm._v(" "),
@@ -47389,7 +47426,11 @@ var render = function () {
                           attrs: { "data-id": item.id },
                           on: { click: _vm.serviceDelete },
                         },
-                        [_vm._v("\n                Del\n              ")]
+                        [
+                          _vm._v(
+                            "\n                                Del\n                            "
+                          ),
+                        ]
                       ),
                     ]),
                   ])
@@ -47404,14 +47445,14 @@ var render = function () {
               "button",
               {
                 staticClass:
-                  "\n          bg-emerald-500\n          p-2\n          rounded\n          text-white\n          mx-auto\n          w-3/12\n          bold\n          text-xl\n        ",
+                  "bg-emerald-500 p-2 rounded text-white mx-auto w-3/12 bold text-xl",
                 on: {
                   click: function ($event) {
                     return _vm.serviceCreate()
                   },
                 },
               },
-              [_vm._v("\n        + Add\n      ")]
+              [_vm._v("\n                + Add\n            ")]
             ),
           ]),
           _vm._v(" "),
@@ -47879,7 +47920,6 @@ var render = function () {
             btnClick: function () {
               return _vm.helperTo("/register")
             },
-            color: "purple",
           },
         }),
         _vm._v(" "),
@@ -48211,7 +48251,6 @@ var render = function () {
             name: "Register",
             btnClick: _vm.serviceRegister,
             btnDisabled: _vm.registerDisabled,
-            color: "purple",
           },
         }),
         _vm._v(" "),

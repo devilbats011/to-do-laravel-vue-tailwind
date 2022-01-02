@@ -164,13 +164,17 @@ class TodoController extends Controller
      */
     public function create(Request $request)
     {
-        return response()->json(["check-todo-count" =>
+        $status  = $request->get('permission') === "ALLOW" ? 200 : 403;
+        $data = response()->json([
+            'check-todo-count' =>
         [
             'permission' => $request->get('permission'),
             'redirect' => $request->get('redirect'),
             'to' => $request->get('to'),
-            'count' => $request->get('count'),
-        ]]);
+        ]
+        ],$status);
+
+        return $data;
     }
 
 }
