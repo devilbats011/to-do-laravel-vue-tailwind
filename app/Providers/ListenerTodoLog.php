@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Providers\EventTodoLog;
 use Carbon\Carbon;
+use App\Providers\EventTodoLog;
+use App\Services\ReportService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,7 +29,8 @@ class ListenerTodoLog
     public function handle(EventTodoLog $event)
     {
         /** @var App\Models\User  */
-        $user = Auth::user();
+        // $user = Auth::user();
+        $user = $event->user;
         $content =
         'Title Todo:'.$event->title.
         ' | Activity:'.$event->activity.
@@ -36,6 +38,7 @@ class ListenerTodoLog
         ' | User Type:'.$user->user_type .
         ' | User Achievement:'.$user->achievements.
         ' | Log Date:' . Carbon::now()->toString();
-        Storage::disk('local')->append('todo_log/todo_activity_log.txt', $content);
+        
+        ReportService::reportAudit($content);
     }
 }

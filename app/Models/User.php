@@ -102,7 +102,7 @@ class User extends Authenticatable
                 "| this_noti_status ".  $badge_user_first->noti_status
             );
 
-            if( $achievementCount >= $badge->requiredAchievement && $badge_user_first->noti_status == "none" ){
+            if( $achievementCount >= $badge->requiredAchievement && $badge_user_first->noti_status == "none" ) {
                 $noti_status = "unread";
                 $badge_user->update(array('noti_status' => $noti_status));
                 $result = [
@@ -118,7 +118,7 @@ class User extends Authenticatable
 
     }
 
-    public function onRead($badge_id){
+    public function onRead($badge_id) {
         $badge_user = DB::table('badge_user')->where('user_id',$this->id)->where('badge_id', $badge_id);
         $noti_status = "read";
         $badge_user->update(array('noti_status' => $noti_status));
