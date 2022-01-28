@@ -6,10 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\JsonResponse;
+use App\Interfaces\UserRepositoryInterface;
 
 class AuthApiController extends Controller
 {
-    public function login(Request $request)
+    private UserRepositoryInterface $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository) 
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    public function test(){
+        $this->userRepository->test();
+    }
+
+    public function login(Request $request) : JsonResponse
     {
 
         $validatedData = $request->validate([
@@ -20,31 +33,7 @@ class AuthApiController extends Controller
         $email_or_username = $validatedData['email_or_username'];
         $password = $validatedData['password'];
 
-        $auth_check = false;
-        if (filter_var($email_or_username, FILTER_VALIDATE_EMAIL)) {
-            $auth_check = Auth::attempt(['email' => $email_or_username, 'password' => $password]);
-
-        } else {
-            //user use username
-            $auth_check = Auth::attempt(['username' => $email_or_username, 'password' => $password]);
-        }
-
-        // return invalid message when fail Auth
-        if (!$auth_check) {
-            Storage::disk('local')->append('todo-auth-log/log.txt', "auth_check::false");
-            return response()->json(['message' => 'Invalid login details'], 401);
-        }
-
-        /** @var \App\Models\user **/
-        $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        // return token when User login
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'to' => 'display',
-        ]);
+        return $this->userRepository->login($email_or_username, $password);
     }
 
     // method for user logout and delete token
@@ -71,25 +60,8 @@ class AuthApiController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        //no error validation,thus New User are registered along with the token
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'username' => $validatedData['username'],
-            'email' => $validatedData['email'],
-            'phone' => $validatedData['phone'],
-            'password' => Hash::make($validatedData['password']),
-            'user_type' => 'free_user',
-        ]);
-        $token = $user->createToken('auth_token')->plainTextToken;
+        return $this->userRepository->register($validatedData);
 
-        //return token after succesfully registered
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'message_status' => "SUCCESS",
-            "message" => "succesfully register account",
-            'to' => "",
-        ]);
     }
 
     public function getTheUser()
