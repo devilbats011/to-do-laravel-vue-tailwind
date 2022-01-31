@@ -2,14 +2,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Todo;
 use App\Models\Badge;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Todo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -61,7 +60,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Badge::class);
     }
 
-     public function setAllBadge() {
+    public function setAllBadge()
+    {
         //assume all badge were seeded
         $badges = DB::table('badges')->get();
 
@@ -79,50 +79,43 @@ class User extends Authenticatable
         if (is_int($achievementCount)) {
             $this->update(['achievements' => $achievementCount]);
         }
-        
+
         $result = [
             'notficition_status' => "none",
             'achievements' => $this['achievements'],
             'badge_id' => null,
             'badge_name' => null,
         ];
-        
-        $badges = $this->badges()->get();
-        foreach ($badges as $badge) {
-            $badge_user = DB::table('badge_user')->where('user_id',$this->id)->where('badge_id', $badge->id);
-            $badge_user_first = $badge_user->first(); 
-            // $badge_user = DB::table('badge_user')->where('user_id',1)->where('badge_id', 1)->first();
-            
-            
-            Storage::disk('local')->append('check_user/milestones.txt',
-                "| badgeId ".$badge->id.
-                "| thisId ". $this->id.
-                "| achievementCount ". $achievementCount.
-                "| requiredAchievement ". $badge->requiredAchievement.
-                "| this_noti_status ".  $badge_user_first->noti_status
-            );
 
-            if( $achievementCount >= $badge->requiredAchievement && $badge_user_first->noti_status == "none" ) {
-                $noti_status = "unread";
-                $badge_user->update(array('noti_status' => $noti_status));
+        //other alternative procedures
+        foreach ($this->badges()->where('requiredAchievement', '<=', $achievementCount)->cursor() as $badge) {
+            // print($badge->name."|");
+            $unread = "unread";
+            $isUpdate = DB::table('badge_user')->where([
+                ['user_id', '=', $this->id],
+                ['badge_id', '=', $badge->id],
+                ['noti_status', '=', 'none'],
+            ])->update(array('noti_status' => $unread));
+
+            if ($isUpdate === 1) {
                 $result = [
-                    'notficition_status' => $noti_status,
+                    'notficition_status' => $unread,
                     'achievements' => $achievementCount,
                     'badge_id' => $badge->id,
                     'badge_name' => $badge->name,
                 ];
             }
         }
-
+    
         return $result;
 
     }
 
-    public function onRead($badge_id) {
-        $badge_user = DB::table('badge_user')->where('user_id',$this->id)->where('badge_id', $badge_id);
+    public function onRead($badge_id)
+    {
+        $badge_user = DB::table('badge_user')->where('user_id', $this->id)->where('badge_id', $badge_id);
         $noti_status = "read";
         $badge_user->update(array('noti_status' => $noti_status));
     }
-
 
 }
